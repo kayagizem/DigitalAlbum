@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, Image, TextInput } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Alert } from 'react-native-web';
-import { textDecorationColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 function SignUpScreen() {
     return (
         <View style={styles.screen}>
-            <View style={styles.topBar}><Text style={styles.screenName}>Sign Up</Text></View>
+            <View style={styles.topBar}><Text style={styles.screenTitle}>Sign Up</Text></View>
             <TextInput
                 style={styles.input}
                 placeholder='Name'
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 5,
     },
-    screenName: {
+    screenTitle: {
         fontSize: 36,
         textAlign: 'center',
         fontWeight: 'bold',
