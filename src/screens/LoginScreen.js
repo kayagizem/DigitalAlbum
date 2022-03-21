@@ -8,7 +8,7 @@ function LoginScreen() {
             <View style={styles.topBar}><Text style={styles.screenTitle}>Log In</Text></View>
             <TextInput
                 style={styles.input}
-                placeholder='Email or Username'
+                placeholder='Username or Email'
             />
             <TextInput
                 style={styles.input}
@@ -25,20 +25,51 @@ function LoginScreen() {
                 onPress={() => Alert.alert('Button Pressed.')}>
                 <Text style={styles.buttonText}>Log In</Text>
             </Pressable>
+            <Pressable style={styles.textContainer}>
+                <Text style={styles.linkText}>Forgot your password?</Text>
+            </Pressable>
+            <Pressable style={styles.textContainer}>
+                <Text style={styles.linkText}>Don't have an account? Sign up.</Text>
+            </Pressable>
         </View >
     );
 }
 
 const styles = StyleSheet.create({
     topBar: {
-        padding: 10,
+        paddingHorizontal: 5,
+        paddingVertical: 15,
         marginBottom: 20,
         marginTop: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    box: {
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 5,
+        flex: 1,
+    },
+    backText: {
+        color: '#073D48',
+        fontSize: 17,
+    },
+    textContainer: {
+        alignItems: 'center',
+        paddingTop: 12,
+        paddingHorizontal: 15,
+    },
+    linkText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#5AA2B1',
     },
     screenTitle: {
         fontSize: 36,
         textAlign: 'center',
         fontWeight: 'bold',
+        flex: 6,
     },
     screen: {
         flex: 1,
@@ -66,7 +97,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
         letterSpacing: 0.25,
-    }
+    },
 });
 
 export default LoginScreen;

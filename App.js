@@ -7,7 +7,7 @@ import LoginScreen from './src/screens/LoginScreen';
 export default function App() {
   return (
     <View style={styles.container}>
-      <SignUpScreen />
+      <LoginScreen />
       <StatusBar style="auto" />
     </View>
   );
