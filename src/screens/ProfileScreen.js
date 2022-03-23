@@ -21,13 +21,11 @@ function ProfileScreen({ navigation }) {
                     <Image style={styles.profilePicture}
                         source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}>
                     </Image>
-                    <Text style={styles.profileName}>Emre Aydın</Text>
+                    <Text style={styles.profileName}>Emre</Text>
                 </View>
                 <View style={styles.profileBioBlock}>
                     <Text style={styles.profileId}>@eaydin17</Text>
                     <Text style={styles.profileBio}>Hello, text for test.
-                        A:SDF:ADSF:DSAF:DSA:FDSA:F:SAD
-                        Ne güldüm be
                     </Text>
                 </View>
             </View>
