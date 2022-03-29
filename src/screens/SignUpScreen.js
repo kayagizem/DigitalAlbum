@@ -8,13 +8,13 @@ function SignUpScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
-                <Pressable style={styles.headerLeftBox}
-                    onPress={() => navigation.goBack()}>
-                    <Text style={styles.headerText}>Back</Text>
-                </Pressable>
+                <View style={styles.headerLeftBox}>
+                    <Text style={styles.headerText}
+                        onPress={() => navigation.goBack()}>Back</Text>
+                </View>
                 <Text style={styles.headerTitle}>Sign Up</Text>
-                <Pressable style={styles.headerRightBox}>
-                </Pressable>
+                <View style={styles.headerRightBox}>
+                </View>
             </View>
             <View style={styles.content}>
                 <TextInput
@@ -46,14 +46,17 @@ function SignUpScreen({ navigation }) {
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </Pressable>
                 <View style={styles.textContainer}>
-                    <Text style={{ color: '#666666' }}>
+                    <Text style={{
+                        color: '#666666',
+                        marginTop: 10,
+                    }}>
                         By signing up, you agree to our <Text style={{ color: '#00A3FF' }}>Terms</Text> and <Text style={{ color: '#00A3FF' }}>Data Policy</Text>.
                     </Text>
                 </View>
-                <Pressable style={styles.textContainer}
-                    onPress={() => navigation.goBack()}>
-                    <Text style={styles.linkText}>Already have an account? Log in.</Text>
-                </Pressable>
+                <View style={styles.textContainer}>
+                    <Text style={styles.linkText}
+                        onPress={() => navigation.goBack()}>Already have an account? Log in.</Text>
+                </View>
             </View>
         </View>
     );

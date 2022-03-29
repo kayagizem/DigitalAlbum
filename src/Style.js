@@ -20,6 +20,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         borderBottomWidth: 1,
         borderColor: '#073D48',
+        height: 80
     },
     headerLeftBox: {
         alignItems: 'flex-start',
@@ -36,26 +37,20 @@ export default StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
     },
-    headerProfileTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        flex: 6,
-    },
     headerTitle: {
         fontSize: 36,
         textAlign: 'center',
         fontWeight: 'bold',
         flex: 6,
     },
-    textContainer: {
-        alignItems: 'center',
-        marginTop: 10,
-        marginHorizontal: 15,
-    },
     linkText: {
         fontSize: 14,
         fontWeight: 'bold',
         color: '#5AA2B1',
+        marginTop: 10,
+    },
+    textContainer: {
+        alignItems: 'center'
     },
     input: {
         marginVertical: 10,
@@ -80,16 +75,12 @@ export default StyleSheet.create({
         letterSpacing: 0.25,
     },
     profileBlock: {
-        flexDirection: 'row',
-        paddingTop: 15,
+        flexDirection: 'column',
+        paddingVertical: 15,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderColor: '#073D48',
-        height: 155,
-    },
-    profileLeftBlock: {
-        flex: 5,
-        paddingLeft: 5
+        maxHeight: 230
     },
     profilePicture: {
         width: 90,
@@ -99,22 +90,42 @@ export default StyleSheet.create({
         borderWidth: 2,
     },
     profileName: {
-        marginTop: 10,
         fontSize: 16,
         color: '#073D48',
         fontWeight: 'bold',
-    },
-    profileBioBlock: {
-        flex: 8
+        marginTop: 15,
     },
     profileId: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 5,
         color: '#073D48',
+        textAlign: 'center',
+        flex: 6,
     },
     profileBio: {
         fontSize: 14,
         color: '#073D48',
+        marginTop: 5,
+    },
+    profileContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    profileButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#073D48',
+        padding: 10,
+        paddingHorizontal: 20,
+        margin: 2
+    },
+    profileButtonText: {
+        fontSize: 14,
+        color: '#ffffff',
+    },
+    profileButtonContainer: {
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'center',
     }
 });

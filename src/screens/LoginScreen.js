@@ -8,11 +8,11 @@ function LoginScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
-                <Pressable style={styles.headerLeftBox}>
-                </Pressable>
+                <View style={styles.headerLeftBox}>
+                </View>
                 <Text style={styles.headerTitle}>Log In</Text>
-                <Pressable style={styles.headerRightBox}>
-                </Pressable>
+                <View style={styles.headerRightBox}>
+                </View>
             </View>
             <View style={styles.content}>
                 <TextInput
@@ -35,17 +35,19 @@ function LoginScreen({ navigation }) {
                     onPress={() => Alert.alert('Button Pressed.')}>
                     <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
-                <Pressable style={styles.textContainer}>
+
+                <View style={styles.textContainer}>
                     <Text style={styles.linkText}>Forgot your password?</Text>
-                </Pressable>
-                <Pressable style={styles.textContainer}
-                    onPress={() => navigation.navigate('Sign Up')}>
-                    <Text style={styles.linkText}>Don't have an account? Sign up.</Text>
-                </Pressable>
-                <Pressable style={styles.textContainer}
-                    onPress={() => navigation.navigate('Profile')}>
-                    <Text style={styles.linkText}>[TESTING PURPOSE] Go to profile page.</Text>
-                </Pressable>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.linkText}
+                        onPress={() => navigation.navigate('Sign Up')}>Don't have an account? Sign up.</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.linkText}
+                        onPress={() => navigation.navigate('Profile')}>[TESTING PURPOSE] Go to profile page.</Text>
+                </View>
+
             </View >
         </View>
     );
