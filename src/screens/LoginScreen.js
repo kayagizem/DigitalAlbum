@@ -1,10 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Alert } from 'react-native-web';
-
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import styles from '../Style';
 
-function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation }, props) {
+
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+
+    const onSignUp = () => {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+    }
+
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
@@ -19,11 +31,15 @@ function LoginScreen({ navigation }) {
                     style={styles.input}
                     placeholder='Username or Email'
                     keyboardType='email-address'
+                    onChangeText={(email) => setEmail(email)}
+
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
                     secureTextEntry={true}
+                    onChangeText={(password) => setPassword(password)}
+
                 />
                 <Pressable
                     style={({ pressed }) => [
@@ -32,7 +48,7 @@ function LoginScreen({ navigation }) {
                             backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
                         }
                     ]}
-                    onPress={() => Alert.alert('Button Pressed.')}>
+                    onPress={() => onSignUp()}>
                     <Text style={styles.buttonText}>Log In</Text>
                 </Pressable>
 
@@ -53,4 +69,3 @@ function LoginScreen({ navigation }) {
     );
 }
 
-export default LoginScreen;
