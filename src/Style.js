@@ -127,5 +127,8 @@ export default StyleSheet.create({
         flexDirection: 'row',
         flex: 1,
         justifyContent: 'center',
+    },
+    albumView: {
+        margin: 5,
     }
 });
