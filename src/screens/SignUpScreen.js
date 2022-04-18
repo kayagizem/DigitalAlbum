@@ -1,10 +1,42 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
-import { Alert } from 'react-native-web';
-
+import { Alert, Button } from 'react-native-web';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import styles from '../Style';
+import {auth} from '/Users/gizem.kaya/DigitalAlbum-1/src/firebase.js'
+import {createUserWithEmailAndPassword} from 'firebase/auth'
 
-function SignUpScreen({ navigation }) {
+
+
+export default class SignUpScreen extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            email: '',
+            password: '',
+            name: '',
+            username: ''
+        }
+
+        this.onSignUp = this.onSignUp.bind(this)
+    }
+
+    onSignUp(){
+        const{email, password, name, username} = this.state
+        createUserWithEmailAndPassword(auth,email,password)
+        .then((result) => {
+            console.log(result)
+        })
+        .catch((error)=> {
+            console.log(error)
+        })
+    }
+
+
+    render(){
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
@@ -19,32 +51,40 @@ function SignUpScreen({ navigation }) {
             <View style={styles.content}>
                 <TextInput
                     style={styles.input}
-                    placeholder='Name'
+                    placeholder="Name"
+                    onChangeText={(name) => this.setState({name})}
                 />
                 <TextInput
                     style={styles.input}
-                    placeholder='Username'
+                    placeholder="Username"
+                    onChangeText={(username) => this.setState({username})}
+
                 />
                 <TextInput
                     style={styles.input}
-                    placeholder='Email'
+                    placeholder="Email"
                     keyboardType='email-address'
+                    onChangeText={(email) => this.setState({email})}
+
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
                     secureTextEntry={true}
+                    onChangeText={(password) => this.setState({password})}
+
                 />
-                <Pressable
+                <Pressable                   
                     style={({ pressed }) => [
                         styles.button,
                         {
                             backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
                         }
                     ]}
-                    onPress={() => Alert.alert('Button Pressed.')}>
+                    onPress={() => onSignUp()}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </Pressable>
+                
                 <View style={styles.textContainer}>
                     <Text style={{
                         color: '#666666',
@@ -55,11 +95,11 @@ function SignUpScreen({ navigation }) {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.linkText}
-                        onPress={() => navigation.goBack()}>Already have an account? Log in.</Text>
+                        onPress={() => props.navigation.goBack()}>Already have an account? Log in.</Text>
                 </View>
             </View>
         </View>
-    );
+    )
+    }
 }
 
-export default SignUpScreen;
