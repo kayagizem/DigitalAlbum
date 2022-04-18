@@ -12,10 +12,10 @@ function AlbumView(props) {
     return (
         <View style={props.style}>
             <View style={styles.albumContainer}>
-                <Image style={styles.albumCover}
+                <Image style={styles.albumImage}
                     source={{ uri: props.image }}>
                 </Image>
-                <Text style={styles.albumId}>{props.aid}</Text>
+                <Text style={styles.albumId} numberOfLines={1}>{props.aid}</Text>
             </View>
         </View>
     )
@@ -23,21 +23,21 @@ function AlbumView(props) {
 
 const styles = StyleSheet.create({
     albumContainer: {
-        padding: 10,
-        backgroundColor: '#f3f3f3',
+        padding: 1,
+        backgroundColor: '#f8f8f8',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 2
     },
-    albumCover: {
-        width: 145,
-        height: 145,
-        borderRadius: 10
+    albumImage: {
+        width: '100%',
+        aspectRatio: 1,
+        borderRadius: 2
     },
     albumId: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#073D48',
         fontWeight: 'bold',
-        marginTop: 5,
+        margin: 4
     }
 });
 

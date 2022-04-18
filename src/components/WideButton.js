@@ -1,13 +1,6 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 
-/*
-* Created custom component
-* <WideButton title='Sign Up' />
-* Components like Sign Up and Log In button.
-* It will be tested.
-*/
-
 function WideButton(props) {
     return (
         <Pressable
@@ -17,8 +10,8 @@ function WideButton(props) {
                     backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
                 }
             ]}
-            onPress={() => Alert.alert('Button Pressed.')}>
-            <Text style={styles.buttonText}>{props.title}</Text>
+            onPress={props.onPress}>
+            <Text style={styles.buttonText}>{props.text}</Text>
         </Pressable>
     )
 }

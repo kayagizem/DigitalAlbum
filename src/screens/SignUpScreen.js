@@ -1,42 +1,60 @@
-import React, {Component} from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
-import { Alert, Button } from 'react-native-web';
+
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+
 import styles from '../Style';
-import {auth} from '/Users/gizem.kaya/DigitalAlbum-1/src/firebase.js'
-import {createUserWithEmailAndPassword} from 'firebase/auth'
+import WideButton from '../components/WideButton';
 
-
-
-export default class SignUpScreen extends Component {
-
-    constructor(props){
-        super(props);
-        this.state = {
-            email: '',
-            password: '',
-            name: '',
-            username: ''
-        }
-
-        this.onSignUp = this.onSignUp.bind(this)
-    }
-
-    onSignUp(){
-        const{email, password, name, username} = this.state
-        createUserWithEmailAndPassword(auth,email,password)
+function onSignUp(data) {
+    const { email, password, name, username } = data
+    createUserWithEmailAndPassword(auth, email, password)
         .then((result) => {
             console.log(result)
         })
-        .catch((error)=> {
+        .catch((error) => {
             console.log(error)
         })
+}
+
+function SignUpScreen({ navigation }) {
+
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [userExists, setUserExists] = useState(false);
+
+    const formatData = () => {
+        return ({
+            email,
+            password,
+            name,
+            username,
+        });
     }
 
+    const renderWarning = () => {
+        if (userExists) {
+            return (
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <Text style={{
+                        color: '#ee3322',
+                        margin: 2
+                    }}>
+                        Username already taken
+                    </Text>
+                </View>
+            )
+        }
+    }
 
-    render(){
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
@@ -48,43 +66,38 @@ export default class SignUpScreen extends Component {
                 <View style={styles.headerRightBox}>
                 </View>
             </View>
+
             <View style={styles.content}>
                 <TextInput
                     style={styles.input}
                     placeholder="Name"
-                    onChangeText={(name) => this.setState({name})}
+                    onChangeText={(name) => setName(name)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Username"
-                    onChangeText={(username) => this.setState({username})}
-
+                    onChangeText={(username) => setUsername(username)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
                     keyboardType='email-address'
-                    onChangeText={(email) => this.setState({email})}
-
+                    onChangeText={(email) => setEmail(email)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
                     secureTextEntry={true}
-                    onChangeText={(password) => this.setState({password})}
-
+                    onChangeText={(password) => setPassword(password)}
                 />
-                <Pressable                   
-                    style={({ pressed }) => [
-                        styles.button,
-                        {
-                            backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
-                        }
-                    ]}
-                    onPress={() => onSignUp()}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </Pressable>
-                
+
+                {renderWarning()}
+
+                <WideButton
+                    text='Log In'
+                    onPress={() => { console.log(formatData()) }}
+                />
+
                 <View style={styles.textContainer}>
                     <Text style={{
                         color: '#666666',
@@ -100,6 +113,7 @@ export default class SignUpScreen extends Component {
             </View>
         </View>
     )
-    }
+
 }
 
+export default SignUpScreen;
