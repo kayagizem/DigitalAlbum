@@ -1,22 +1,18 @@
 import React from 'react';
-import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 
-/*
-* Created custom component
-* <WideButton title='Sign Up' />
-* Components like Sign Up and Log In button.
-* It will be tested.
-*/
-
-function AlbumView(props) {
+const AlbumView = (props) => {
+    console.log(props.albumId);
     return (
         <View style={props.style}>
-            <View style={styles.albumContainer}>
-                <Image style={styles.albumImage}
-                    source={{ uri: props.image }}>
-                </Image>
-                <Text style={styles.albumId} numberOfLines={1}>{props.aid}</Text>
-            </View>
+            <Pressable onPress={() => props.nav.navigate('Album', { albumId: props.albumId })} >
+                <View style={styles.albumContainer}>
+                    <Image style={styles.albumImage}
+                        source={{ uri: props.image }}>
+                    </Image>
+                    <Text style={styles.albumId} numberOfLines={1}>{props.albumId}</Text>
+                </View>
+            </Pressable>
         </View>
     )
 }

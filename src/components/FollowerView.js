@@ -8,15 +8,15 @@ import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 * It will be tested.
 */
 
-function FollowerView(props) {
+const FollowerView = (props) => {
     return (
         <View style={props.style}>
-            <Pressable onPress={() => props.nav.navigate('Profile', { uid: props.uid })} >
+            <Pressable onPress={() => props.nav.navigate('Profile', { username: props.username })} >
                 <View style={styles.followerContainer}>
                     <Image style={styles.profilePicture}
                         source={{ uri: props.image }}>
                     </Image>
-                    <Text style={styles.userID}>{props.uid}</Text>
+                    <Text style={styles.username}>{props.username}</Text>
                 </View>
             </Pressable>
         </View >
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 45,
     },
-    userID: {
+    username: {
         fontSize: 14,
         color: '#073D48',
         fontWeight: 'bold',

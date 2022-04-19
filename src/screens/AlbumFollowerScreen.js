@@ -3,91 +3,92 @@ import { View, Text, FlatList } from 'react-native';
 
 import styles from '../Style';
 
+import HeaderBar from '../components/HeaderBar';
 import FollowerView from '../components/FollowerView';
 
 const testData = [
     {
-        uid: 'emre1',
+        username: 'emre1',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre2',
+        username: 'emre2',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre3',
+        username: 'emre3',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre4',
+        username: 'emre4',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre5',
+        username: 'emre5',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre6',
+        username: 'emre6',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre7',
+        username: 'emre7',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre8',
+        username: 'emre8',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre9',
+        username: 'emre9',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre10',
+        username: 'emre10',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre11',
+        username: 'emre11',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre12',
+        username: 'emre12',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre13',
+        username: 'emre13',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre14',
+        username: 'emre14',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre15',
+        username: 'emre15',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre16',
+        username: 'emre16',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre17',
+        username: 'emre17',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre18',
+        username: 'emre18',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre19',
+        username: 'emre19',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre20',
+        username: 'emre20',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
     {
-        uid: 'emre21',
+        username: 'emre21',
         image: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg'
     },
 ];
@@ -95,24 +96,21 @@ const testData = [
 function AlbumFollowerScreen({ navigation }) {
 
     const renderItem = ({ item }) => (
-        <FollowerView style={{ marginVertical: 4 }} uid={item.uid} image={item.image} nav={navigation} />
+        <FollowerView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
     );
 
     return (
         <View style={styles.screen}>
-            <View style={styles.headerBar}>
-                <View style={styles.headerLeftBox}>
-                    <Text style={styles.headerText}
-                        onPress={() => navigation.goBack()}>Back</Text>
-                </View>
-                <Text style={styles.profileId}>Followers</Text>
-                <View style={styles.headerRightBox} />
-            </View>
+            <HeaderBar title="Followers"
+                leftButtonText="Back"
+                onPressLeft={() => navigation.goBack()}
+            />
+
             <View style={styles.content}>
                 <FlatList
                     data={testData}
                     renderItem={renderItem}
-                    keyExtractor={item => item.uid}
+                    keyExtractor={item => item.username}
                 />
             </View >
         </View>

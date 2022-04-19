@@ -9,7 +9,8 @@ import { useState } from 'react/cjs/react.production.min';
 * It will be tested.
 */
 
-function ExpandableText(props, numberOfLines) {
+function ExpandableText(props) {
+    
     return (
         <Text style={props.style}>{props.children}</Text>
     )

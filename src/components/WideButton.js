@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 
-function WideButton(props) {
+const WideButton = (props) => {
     return (
         <Pressable
             style={({ pressed }) => [

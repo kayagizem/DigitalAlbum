@@ -10,6 +10,8 @@ import 'firebase/compat/firestore';
 import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+
+import AlbumScreen from './src/screens/AlbumScreen';
 import AlbumFollowerScreen from './src/screens/AlbumFollowerScreen';
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +41,7 @@ export default function App() {
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Album" component={AlbumScreen} />
         <Stack.Screen name="Album Followers" component={AlbumFollowerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
