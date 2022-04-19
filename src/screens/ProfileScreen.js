@@ -1,18 +1,33 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import AlbumView from '../components/AlbumView';
-
+import firebase from 'firebase/compat';
 import styles from '../Style';
+import { connect } from 'react-redux';
+import {useEffect,useState} from 'react'
+import { bindActionCreators } from 'redux';
 
-function ProfileScreen({ navigation }) {
+function ProfileScreen(props) {
+
+    const { currentUser } = props;
+    console.log({currentUser})
+    
+    if (currentUser==undefined){
+        return(
+            <View></View>
+        )
+    }
+
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
                 <View style={styles.headerLeftBox}>
                     <Text style={styles.headerText}
-                        onPress={() => navigation.goBack()}>Back</Text>
+                        onPress={() => this.props.navigation.goBack()}>Back</Text>
                 </View>
-                <Text style={styles.profileId}>guitarist</Text>
+                <View style={styles.profileId}>
+                <Text style={styles.profileId} >{currentUser.username}</Text>
+                </View>
                 <View style={styles.headerRightBox}>
                     <Text style={styles.headerText}>Settings</Text>
                 </View>
@@ -39,7 +54,7 @@ function ProfileScreen({ navigation }) {
                         </View>
                     </View>
                 </View>
-                <Text style={styles.profileName}>Guitarist</Text>
+                <Text style={styles.profileName}>{currentUser.name}</Text>
                 <Text style={styles.profileBio} numberOfLines={4}>Test photo is taken from Firmbee.{'\n'}My albums are awesome.
                 </Text>
             </View>
@@ -71,6 +86,15 @@ function ProfileScreen({ navigation }) {
             </View>
         </View >
     );
+
+      
+
 }
 
-export default ProfileScreen;
+const mapStateToProps = (store) => ({
+    currentUser: store.userState.currentUser
+})
+
+
+
+export default connect(mapStateToProps,null)(ProfileScreen);

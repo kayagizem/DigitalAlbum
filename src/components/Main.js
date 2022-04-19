@@ -9,15 +9,18 @@ import { View } from 'react-native-web';
 import LoginScreen from '../screens/LoginScreen';
 
 export class Main extends Component {
+
+  
     componentDidMount(){
         this.props.fetchUser();
     }
+
   render() {
       const {currentUser} = this.props;
-      console.log(currentUser)
+      console.log({currentUser})
 
-    return (
-            <ProfileScreen />  
+        return (
+            <ProfileScreen/>  
         )
   }
 }

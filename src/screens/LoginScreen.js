@@ -60,7 +60,8 @@ export class LoginScreen extends Component {
                                 backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
                             }
                         ]}
-                        onPress={() => Alert.alert('Button Pressed.')}>
+                        onPress={() => this.onLogIn()}
+                        >
                         <Text style={styles.buttonText}>Log In</Text>
                     </Pressable>
     
@@ -75,7 +76,10 @@ export class LoginScreen extends Component {
                         <Text style={styles.linkText}
                             onPress={() => this.props.navigation.navigate('Profile')}>[TESTING PURPOSE] Go to profile page.</Text>
                     </View>
-    
+                    <View style={styles.textContainer}>
+                    <Text style={styles.linkText}
+                        onPress={() => this.props.navigation.navigate('Album Followers')}>[TESTING PURPOSE] Go to Album Followers page.</Text>
+                </View>
                 </View >
             </View>
         );

@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import MainScreen from './src/components/Main';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initializeApp } from "firebase/app";
 import firebase from 'firebase/compat/app';
@@ -13,6 +12,9 @@ import { Provider } from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import rootReducer from './redux/reducers';
 import thunk from 'redux-thunk'
+import Main from './src/components/Main';
+import { View } from 'react-native-web';
+import AlbumFollowerScreen from './src/screens/AlbumFollowerScreen';
 
 const store =  createStore(rootReducer, applyMiddleware(thunk))
 
@@ -37,7 +39,7 @@ if (!firebase.apps.length) {
 
 export class App extends Component {
   constructor(props){
-    super(props);
+    super();
     this.state={
       loaded: false,
     }
@@ -61,6 +63,7 @@ export class App extends Component {
 
   render() {
     const {loggedIn,loaded} = this.state;
+    
     if(!loggedIn){
       return (
         <NavigationContainer>
@@ -71,16 +74,18 @@ export class App extends Component {
             }}>
             <Stack.Screen name="Log In" component={LoginScreen} />
             <Stack.Screen name="Sign Up" component={SignUpScreen}/>
-            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Album Followers" component={AlbumFollowerScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       );
     }
+
     return(
       <Provider store = {store}>
-      <MainScreen/>
-      </Provider>
+            <Main/>    
+         </Provider>
     )
+    
   }
 }
 
