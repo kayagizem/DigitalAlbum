@@ -73,6 +73,7 @@ export default StyleSheet.create({
         fontSize: 16,
         color: 'white',
         letterSpacing: 0.25,
+
     },
     profileBlock: {
         flexDirection: 'column',

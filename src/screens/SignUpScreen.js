@@ -1,16 +1,53 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
-import { Alert } from 'react-native-web';
-
+import React, {Component} from 'react';
+import { View, Text, Pressable, Button, TextInput } from 'react-native';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import styles from '../Style';
+require('firebase/firestore');
 
-function SignUpScreen({ navigation }) {
+export class SignUpScreen extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            email: '',
+            password: '',
+            name: '',
+            username:'',
+        }
+
+        this.onSignUp = this.onSignUp.bind(this)
+    }
+
+    onSignUp()  {
+        const{email,password,name,username} = this.state
+        firebase.auth().createUserWithEmailAndPassword(email,password)
+        .then((result) => {
+             firebase.firestore().collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .set({
+                name,
+                email,
+                username
+            })
+            .then(() => {
+                console.log('User added!');
+              });
+        })
+        .catch((error)=> {
+            console.log(error)
+        })
+    }
+
+
+    render(){
     return (
         <View style={styles.screen}>
             <View style={styles.headerBar}>
                 <View style={styles.headerLeftBox}>
                     <Text style={styles.headerText}
-                        onPress={() => navigation.goBack()}>Back</Text>
+                        onPress={() => this.props.navigation.goBack()}>Back</Text>
                 </View>
                 <Text style={styles.headerTitle}>Sign Up</Text>
                 <View style={styles.headerRightBox}>
@@ -19,32 +56,35 @@ function SignUpScreen({ navigation }) {
             <View style={styles.content}>
                 <TextInput
                     style={styles.input}
-                    placeholder='Name'
+                    placeholder="Name"
+                    onChangeText={(name) => this.setState({name})}
                 />
                 <TextInput
                     style={styles.input}
-                    placeholder='Username'
+                    placeholder="Username"
+                    onChangeText={(username) => this.setState({username})}
+
                 />
                 <TextInput
                     style={styles.input}
-                    placeholder='Email'
+                    placeholder="Email"
                     keyboardType='email-address'
+                    onChangeText={(email) => this.setState({email})}
+
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
                     secureTextEntry={true}
+                    onChangeText={(password) => this.setState({password})}
+
                 />
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.button,
-                        {
-                            backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
-                        }
-                    ]}
-                    onPress={() => Alert.alert('Button Pressed.')}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </Pressable>
+                <Button
+                 onPress={() => this.onSignUp()}
+                 title="SIGN UP"
+                 color="#5AA2B1"
+                />
+
                 <View style={styles.textContainer}>
                     <Text style={{
                         color: '#666666',
@@ -55,11 +95,12 @@ function SignUpScreen({ navigation }) {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.linkText}
-                        onPress={() => navigation.goBack()}>Already have an account? Log in.</Text>
+                        onPress={() => this.props.navigation.navigate("Log In")}>Already have an account? Log in.</Text>
                 </View>
             </View>
         </View>
-    );
+    )
+    }
 }
 
 export default SignUpScreen;
