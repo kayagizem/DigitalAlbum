@@ -6,7 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screens/ProfileScreen';
 import { View } from 'react-native-web';
-import LoginScreen from '../screens/LoginScreen';
+
+const Stack = createNativeStackNavigator();
 
 export class Main extends Component {
 
@@ -15,12 +16,21 @@ export class Main extends Component {
         this.props.fetchUser();
     }
 
+
   render() {
       const {currentUser} = this.props;
       console.log({currentUser})
 
         return (
-            <ProfileScreen/>  
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              animation: 'fade'
+            }}>
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>        
         )
   }
 }
