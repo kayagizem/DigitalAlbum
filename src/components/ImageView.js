@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 const ImageView = (props) => {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
+
     return (
         <View style={props.style}>
             <View style={styles.ImageViewContainer}>
@@ -18,9 +23,9 @@ const ImageView = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
     ImageViewContainer: {
-        backgroundColor: '#f8f8f8',
+        backgroundColor: colors.card,
         alignItems: 'center',
         paddingBottom: 10,
     },
@@ -37,13 +42,13 @@ const styles = StyleSheet.create({
     },
     authorUsername: {
         fontSize: 13,
-        color: '#073D48',
+        color: colors.text,
         fontWeight: 'bold',
         alignSelf: 'flex-start',
     },
     comment: {
         fontSize: 13,
-        color: '#073D48',
+        color: colors.text,
         marginLeft: 10
     }
 });

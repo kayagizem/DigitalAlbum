@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 
-import globalStyles from '../Style';
-
 import HeaderBar from '../components/HeaderBar';
 import ImageView from '../components/ImageView';
+
+import { useTheme } from '@react-navigation/native';
 
 const testData = [
     {
@@ -60,6 +60,9 @@ const testData = [
 ];
 
 function AlbumScreen({ route, navigation }) {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
+
     const albumId = route.params.albumId;
 
     const albumData = {
@@ -72,7 +75,7 @@ function AlbumScreen({ route, navigation }) {
     );
 
     return (
-        <View style={globalStyles.screen}>
+        <View style={styles.screen}>
             <HeaderBar title={albumId}
                 isId
                 leftButtonText="Back"
@@ -111,19 +114,29 @@ function AlbumScreen({ route, navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
+    screen: {
+        flex: 1,
+        paddingTop: 40,
+        alignContent: 'center',
+        backgroundColor: colors.background,
+    },
+    content: {
+        paddingHorizontal: 20,
+        marginTop: 15,
+    },
     albumBlock: {
         flexDirection: 'column',
         alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
-        borderColor: '#073D48',
+        borderColor: colors.primary,
         maxHeight: 230
     },
     albumName: {
         fontSize: 18,
-        color: '#073D48',
+        color: colors.text,
         fontWeight: 'bold',
     },
     albumButtonContainer: {
@@ -133,19 +146,15 @@ const styles = StyleSheet.create({
     },
     albumButtonText: {
         fontSize: 14,
-        color: '#ffffff',
+        color: colors.buttonText,
     },
     albumButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#073D48',
+        backgroundColor: colors.primary,
         padding: 10,
         paddingHorizontal: 20,
         margin: 2,
-    },
-    albumButtonText: {
-        fontSize: 14,
-        color: '#ffffff',
     },
 });
 

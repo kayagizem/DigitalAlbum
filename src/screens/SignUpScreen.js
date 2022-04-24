@@ -9,20 +9,11 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import WideButton from '../components/WideButton';
 import HeaderBar from '../components/HeaderBar';
 
-import globalStyles from '../Style';
-
-function onSignUp(data) {
-    const { email, password, name, username } = data
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((result) => {
-            console.log(result)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-}
+import { useTheme } from '@react-navigation/native';
 
 function SignUpScreen({ navigation }) {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
 
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
@@ -58,32 +49,36 @@ function SignUpScreen({ navigation }) {
     }
 
     return (
-        <View style={globalStyles.screen}>
+        <View style={styles.screen}>
             <HeaderBar title="Sign Up"
                 leftButtonText="Back"
                 onPressLeft={() => navigation.goBack()}
             />
 
-            <View style={globalStyles.content}>
+            <View style={styles.content}>
                 <TextInput
                     style={styles.input}
                     placeholder="Name"
+                    placeholderTextColor={colors.placeholder}
                     onChangeText={(name) => setName(name)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Username"
+                    placeholderTextColor={colors.placeholder}
                     onChangeText={(username) => setUsername(username)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
+                    placeholderTextColor={colors.placeholder}
                     keyboardType='email-address'
                     onChangeText={(email) => setEmail(email)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
+                    placeholderTextColor={colors.placeholder}
                     secureTextEntry={true}
                     onChangeText={(password) => setPassword(password)}
                 />
@@ -112,11 +107,21 @@ function SignUpScreen({ navigation }) {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
+    screen: {
+        flex: 1,
+        paddingTop: 40,
+        alignContent: 'center',
+        backgroundColor: colors.background,
+    },
+    content: {
+        paddingHorizontal: 20,
+        marginTop: 15,
+    },
     linkText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#5AA2B1',
+        color: colors.link,
         marginTop: 10,
     },
     textContainer: {
@@ -128,8 +133,9 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingLeft: 15,
         borderRadius: 15,
-        borderColor: '#cfcfcf',
-        backgroundColor: '#efefef',
+        borderColor: colors.border,
+        backgroundColor: colors.input,
+        color: colors.text,
     },
 });
 

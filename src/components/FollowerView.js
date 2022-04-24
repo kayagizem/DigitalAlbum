@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
-/*
-* Created custom component
-* <WideButton title='Sign Up' />
-* Components like Sign Up and Log In button.
-* It will be tested.
-*/
+import { useTheme } from '@react-navigation/native';
 
 const FollowerView = (props) => {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
+
     return (
         <View style={props.style}>
             <Pressable onPress={() => props.nav.navigate('Profile', { username: props.username })} >
@@ -23,10 +21,10 @@ const FollowerView = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
     followerContainer: {
         padding: 10,
-        backgroundColor: '#f3f3f3',
+        backgroundColor: colors.card,
         alignItems: 'center',
         flexDirection: 'row',
     },
@@ -37,7 +35,7 @@ const styles = StyleSheet.create({
     },
     username: {
         fontSize: 14,
-        color: '#073D48',
+        color: colors.text,
         fontWeight: 'bold',
         marginLeft: 15
     }

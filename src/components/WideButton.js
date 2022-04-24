@@ -1,13 +1,18 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 const WideButton = (props) => {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
+
     return (
         <Pressable
             style={({ pressed }) => [
                 styles.button,
                 {
-                    backgroundColor: pressed ? '#69CCE2' : '#5AA2B1'
+                    backgroundColor: pressed ? colors.buttonPressed : colors.button
                 }
             ]}
             onPress={props.onPress}>
@@ -16,18 +21,18 @@ const WideButton = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 45,
-        backgroundColor: '#5AA2B1',
+        backgroundColor: colors.secondary,
         padding: 16,
         marginTop: 10,
     },
     buttonText: {
         fontSize: 16,
-        color: 'white',
+        color: colors.buttonText,
         letterSpacing: 0.25,
     }
 });

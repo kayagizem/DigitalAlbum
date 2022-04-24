@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
-import AlbumView from '../components/AlbumView';
 
-import globalStyles from '../Style';
+import AlbumView from '../components/AlbumView';
 import HeaderBar from '../components/HeaderBar';
+
+import { useTheme } from '@react-navigation/native';
 
 const testData = [
     {
@@ -25,6 +26,8 @@ const testData = [
 ];
 
 function ProfileScreen({ route, navigation }) {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
 
     const username = route.params.username;
 
@@ -40,7 +43,7 @@ function ProfileScreen({ route, navigation }) {
     );
 
     return (
-        <View style={globalStyles.screen}>
+        <View style={styles.screen}>
             <HeaderBar title={username}
                 isId
                 leftButtonText="Back"
@@ -85,31 +88,37 @@ function ProfileScreen({ route, navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
+    screen: {
+        flex: 1,
+        paddingTop: 40,
+        alignContent: 'center',
+        backgroundColor: colors.background,
+    },
     profileBlock: {
         flexDirection: 'column',
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
-        borderColor: '#073D48',
+        borderColor: colors.primary,
         maxHeight: 230
     },
     profilePicture: {
         width: 90,
         height: 90,
         borderRadius: 45,
-        borderColor: '#4D4D4D',
+        borderColor: colors.border,
         borderWidth: 2,
     },
     profileName: {
         fontSize: 16,
-        color: '#073D48',
+        color: colors.text,
         fontWeight: 'bold',
         marginTop: 15,
     },
     profileBio: {
         fontSize: 14,
-        color: '#073D48',
+        color: colors.text,
         marginTop: 5,
     },
     profileContainer: {
@@ -119,14 +128,14 @@ const styles = StyleSheet.create({
     profileButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#073D48',
+        backgroundColor: colors.primary,
         padding: 10,
         paddingHorizontal: 20,
         margin: 2
     },
     profileButtonText: {
         fontSize: 14,
-        color: '#ffffff',
+        color: colors.buttonText,
     },
     profileButtonContainer: {
         flexDirection: 'row',

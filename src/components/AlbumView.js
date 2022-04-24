@@ -1,8 +1,12 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 const AlbumView = (props) => {
-    console.log(props.albumId);
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
+
     return (
         <View style={props.style}>
             <Pressable onPress={() => props.nav.navigate('Album', { albumId: props.albumId })} >
@@ -17,10 +21,10 @@ const AlbumView = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
     albumContainer: {
         padding: 1,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: colors.card,
         alignItems: 'center',
         borderRadius: 2
     },
@@ -31,7 +35,7 @@ const styles = StyleSheet.create({
     },
     albumId: {
         fontSize: 12,
-        color: '#073D48',
+        color: colors.text,
         fontWeight: 'bold',
         margin: 4
     }

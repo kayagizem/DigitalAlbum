@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
-
-import styles from '../Style';
+import { View, FlatList, StyleSheet } from 'react-native';
 
 import HeaderBar from '../components/HeaderBar';
 import FollowerView from '../components/FollowerView';
+
+import { useTheme } from '@react-navigation/native';
 
 const testData = [
     {
@@ -94,6 +94,8 @@ const testData = [
 ];
 
 function AlbumFollowerScreen({ navigation }) {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
 
     const renderItem = ({ item }) => (
         <FollowerView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
@@ -108,6 +110,7 @@ function AlbumFollowerScreen({ navigation }) {
 
             <View style={styles.content}>
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     data={testData}
                     renderItem={renderItem}
                     keyExtractor={item => item.username}
@@ -116,5 +119,18 @@ function AlbumFollowerScreen({ navigation }) {
         </View>
     );
 }
+
+const createStyle = (colors) => StyleSheet.create({
+    screen: {
+        flex: 1,
+        paddingTop: 40,
+        alignContent: 'center',
+        backgroundColor: colors.backgroundColor,
+    },
+    content: {
+        paddingHorizontal: 20,
+        marginTop: 15,
+    },
+});
 
 export default AlbumFollowerScreen;

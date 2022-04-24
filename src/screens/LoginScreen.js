@@ -4,9 +4,11 @@ import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import WideButton from '../components/WideButton';
 import HeaderBar from '../components/HeaderBar';
 
-import globalStyles from '../Style';
+import { useTheme } from '@react-navigation/native';
 
 function LoginScreen({ navigation }) {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -39,19 +41,21 @@ function LoginScreen({ navigation }) {
     }
 
     return (
-        <View style={globalStyles.screen}>
+        <View style={styles.screen}>
             <HeaderBar title="Log In" />
 
-            <View style={globalStyles.content}>
+            <View style={styles.content}>
                 <TextInput
                     style={styles.input}
                     placeholder='Username'
+                    placeholderTextColor={colors.placeholder}
                     onChangeText={(username) => setUsername(username)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder='Password'
                     secureTextEntry={true}
+                    placeholderTextColor={colors.placeholder}
                     onChangeText={(password) => setPassword(password)}
                 />
 
@@ -87,11 +91,21 @@ function LoginScreen({ navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
+    screen: {
+        flex: 1,
+        paddingTop: 40,
+        alignContent: 'center',
+        backgroundColor: colors.background,
+    },
+    content: {
+        paddingHorizontal: 20,
+        marginTop: 15,
+    },
     linkText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#5AA2B1',
+        color: colors.link,
         marginTop: 10,
     },
     textContainer: {
@@ -103,8 +117,9 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingLeft: 15,
         borderRadius: 15,
-        borderColor: '#cfcfcf',
-        backgroundColor: '#efefef',
+        borderColor: colors.border,
+        backgroundColor: colors.input,
+        color: colors.text,
     },
 });
 

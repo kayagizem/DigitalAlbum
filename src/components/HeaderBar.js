@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 /*
     <HeaderBar title="Sign Up"
         leftButtonText="Back"
@@ -10,6 +12,8 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
     />
 */
 const HeaderBar = (props) => {
+    const { colors } = useTheme();
+    const styles = createStyle(colors);
 
     const leftButton = props.leftButtonText ?
         (<Pressable style={styles.headerLeftButton}>
@@ -36,7 +40,7 @@ const HeaderBar = (props) => {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyle = (colors) => StyleSheet.create({
     headerBar: {
         paddingHorizontal: 25,
         paddingVertical: 15,
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomWidth: 1,
-        borderColor: '#073D48',
+        borderColor: colors.primary,
         height: 80
     },
     headerLeftButton: {
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     headerText: {
-        color: '#073D48',
+        color: colors.text,
         fontSize: 17,
         fontWeight: 'bold',
     },
@@ -71,11 +75,12 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 36,
         fontWeight: 'bold',
+        color: colors.headerText,
     },
     idTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#073D48',
+        color: colors.text,
         textAlignVertical: 'center',
         marginTop: 10
     },
