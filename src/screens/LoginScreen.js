@@ -6,39 +6,14 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
+import { onSignIn } from '../backend/firebase'
+
 function LoginScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const [authError, setAuthError] = useState(false);
-
-    const formatData = () => {
-        return ({
-            username,
-            password,
-        });
-    }
-
-    const renderWarning = () => {
-        if (authError) {
-            return (
-                <View style={{
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <Text style={{
-                        color: '#ee3322',
-                        margin: 2
-                    }}>
-                        Wrong username or password.
-                    </Text>
-                </View>
-            )
-        }
-    }
 
     return (
         <View style={styles.screen}>
@@ -47,9 +22,10 @@ function LoginScreen({ navigation }) {
             <View style={styles.content}>
                 <TextInput
                     style={styles.input}
-                    placeholder='Username'
+                    placeholder='Email'
                     placeholderTextColor={colors.placeholder}
-                    onChangeText={(username) => setUsername(username)}
+                    keyboardType='email-address'
+                    onChangeText={(email) => setEmail(email)}
                 />
                 <TextInput
                     style={styles.input}
@@ -59,11 +35,9 @@ function LoginScreen({ navigation }) {
                     onChangeText={(password) => setPassword(password)}
                 />
 
-                {renderWarning()}
-
                 <WideButton
                     text='Log In'
-                    onPress={() => console.log(formatData())} />
+                    onPress={() => onSignIn({ email: email, password: password })} />
 
                 <View style={styles.textContainer}>
                     <Text style={styles.linkText}>Forgot your password?</Text>
@@ -72,20 +46,6 @@ function LoginScreen({ navigation }) {
                     <Text style={styles.linkText}
                         onPress={() => navigation.navigate('Sign Up')}>Don't have an account? Sign up.</Text>
                 </View>
-
-                <View style={styles.textContainer}>
-                    <Text style={styles.linkText}
-                        onPress={() => navigation.navigate('Profile', { username: 'testAccount' })}>[TESTING PURPOSE] Go to profile page.</Text>
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.linkText}
-                        onPress={() => navigation.navigate('Album', { albumId: 'testAlbum' })}>[TESTING PURPOSE] Go to Album page.</Text>
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.linkText}
-                        onPress={() => navigation.navigate('Album Followers')}>[TESTING PURPOSE] Go to Album Followers page.</Text>
-                </View>
-
             </View >
         </View>
     );

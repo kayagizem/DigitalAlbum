@@ -1,19 +1,60 @@
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { useState } from 'react';
+import { View, Text } from 'react-native';
 
 import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import UserProfileScreen from './src/screens/UserProfileScreen';
 import AlbumScreen from './src/screens/AlbumScreen';
 import AlbumFollowerScreen from './src/screens/AlbumFollowerScreen';
 
 import { defaultTheme, darkTheme, greenTheme } from './src/Themes';
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
-  theme = setTheme(2);
+  theme = setTheme(1);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+      setLoading(false);
+    } else {
+      setLoggedIn(false);
+      setLoading(false);
+    }
+  })
+
+  if (loading) {
+    return (
+      <View><Text>Loading Screen </Text></View>
+    )
+  }
+  if (loggedIn) {
+    return (
+      <NavigationContainer theme={theme}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            animation: 'fade'
+          }}>
+          <Stack.Screen name="User Profile" component={UserProfileScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Album" component={AlbumScreen} />
+          <Stack.Screen name="Album Follower" component={AlbumFollowerScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator
@@ -23,9 +64,6 @@ export default function App() {
         }}>
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Album" component={AlbumScreen} />
-        <Stack.Screen name="Album Followers" component={AlbumFollowerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

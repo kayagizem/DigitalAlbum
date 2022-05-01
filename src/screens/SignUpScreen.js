@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-
 import WideButton from '../components/WideButton';
 import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
+
+import { onSignUp } from '../backend/firebase'
 
 function SignUpScreen({ navigation }) {
     const { colors } = useTheme();
@@ -19,34 +16,6 @@ function SignUpScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userExists, setUserExists] = useState(false);
-
-    const formatData = () => {
-        return ({
-            email,
-            password,
-            name,
-            username,
-        });
-    }
-
-    const renderWarning = () => {
-        if (userExists) {
-            return (
-                <View style={{
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <Text style={{
-                        color: '#ee3322',
-                        margin: 2
-                    }}>
-                        Username already taken
-                    </Text>
-                </View>
-            )
-        }
-    }
 
     return (
         <View style={styles.screen}>
@@ -83,11 +52,16 @@ function SignUpScreen({ navigation }) {
                     onChangeText={(password) => setPassword(password)}
                 />
 
-                {renderWarning()}
-
                 <WideButton
-                    text='Log In'
-                    onPress={() => { console.log(formatData()) }}
+                    text='Sign Up'
+                    onPress={() => {
+                        onSignUp({
+                            email: email,
+                            password: password,
+                            username: username,
+                            name: name
+                        });
+                    }}
                 />
 
                 <View style={styles.textContainer}>
