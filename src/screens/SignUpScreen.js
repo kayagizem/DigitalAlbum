@@ -6,9 +6,13 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
-import { onSignUp } from '../backend/firebase'
+import { addUser, signUpFirebase } from '../backend/firebase'
+
+import { useStateValue } from '../StateProvider'
 
 function SignUpScreen({ navigation }) {
+    const [state, dispatch] = useStateValue();
+
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -35,12 +39,14 @@ function SignUpScreen({ navigation }) {
                     style={styles.input}
                     placeholder="Username"
                     placeholderTextColor={colors.placeholder}
+                    autoCapitalize="none"
                     onChangeText={(username) => setUsername(username)}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
                     placeholderTextColor={colors.placeholder}
+                    autoCapitalize="none"
                     keyboardType='email-address'
                     onChangeText={(email) => setEmail(email)}
                 />
@@ -48,19 +54,26 @@ function SignUpScreen({ navigation }) {
                     style={styles.input}
                     placeholder='Password'
                     placeholderTextColor={colors.placeholder}
+                    autoCapitalize="none"
                     secureTextEntry={true}
                     onChangeText={(password) => setPassword(password)}
                 />
 
                 <WideButton
                     text='Sign Up'
-                    onPress={() => {
-                        onSignUp({
+                    onPress={async () => {
+                        const data = {
                             email: email,
                             password: password,
                             username: username,
                             name: name
-                        });
+                        }
+                        await signUpFirebase(data);
+                        await addUser(data);
+                        dispatch({
+                            type: 'setUserData',
+                            payload: { username: username }
+                        })
                     }}
                 />
 

@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 
 import AlbumView from '../components/AlbumView';
 import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
+import { useStateValue } from '../StateProvider';
 
-import { getAuth } from '@firebase/auth';
-import { onSignOut } from '../backend/firebase';
+import { getUserDataByEmail, getUserDataByUsername, onSignOut } from '../backend/firebase';
+import { getAuth } from 'firebase/auth';
+
+
 
 const testData = [
     {
@@ -29,12 +32,30 @@ const testData = [
 ];
 
 function UserProfileScreen({ navigation }) {
+    const [state, dispatch] = useStateValue();
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const auth = getAuth();
+    useEffect(() => {
+        fetchUser();
+    }, []);
 
-    const username = auth.currentUser.email;
+    function fetchUser() {
+        fetchUserAsync();
+    }
+    const fetchUserAsync = async () => {
+        let userData = {};
+        if (state.username != null) {
+            userData = await getUserDataByUsername(state.username);
+        } else {
+            const email = getAuth().currentUser.email;
+            userData = await getUserDataByEmail(email);
+        }
+        dispatch({
+            type: 'setUserData',
+            payload: userData
+        })
+    }
 
     const userData = {
         profilePictureURI: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg',
@@ -49,10 +70,16 @@ function UserProfileScreen({ navigation }) {
 
     return (
         <View style={styles.screen}>
-            <HeaderBar title={username}
+            <HeaderBar title={state.userData.username}
                 isId
                 rightButtonText="Sign Out"
-                onPressRight={() => onSignOut()}
+                onPressRight={() => {
+                    onSignOut();
+                    dispatch({
+                        type: 'setUser',
+                        payload: ''
+                    })
+                }}
             />
 
             <View style={styles.profileBlock}>
@@ -77,7 +104,7 @@ function UserProfileScreen({ navigation }) {
                         </View>
                     </View>
                 </View>
-                <Text style={styles.profileName}>{userData.name}</Text>
+                <Text style={styles.profileName}>{state.userData.name}</Text>
                 <Text style={styles.profileBio} numberOfLines={4}>{userData.biography}
                 </Text>
             </View>

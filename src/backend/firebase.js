@@ -1,10 +1,23 @@
 import { initializeApp } from "firebase/app";
+
 import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut
 } from "firebase/auth";
+
+import {
+    getFirestore,
+    doc,
+    collection,
+    query,
+    where,
+    setDoc,
+    getDoc,
+    getDocs,
+    QuerySnapshot
+} from 'firebase/firestore';
 
 
 const firebaseConfig = {
@@ -17,11 +30,11 @@ const firebaseConfig = {
     measurementId: "G-WF0BEZ4MD7"
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();
 
-export function onSignUp(data) {
+export function signUpFirebase(data) {
     createUserWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
             const user = userCredential.user;
@@ -36,7 +49,6 @@ export function onSignIn(data) {
     signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log(user)
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -51,3 +63,39 @@ export function onSignOut() {
 
     })
 }
+
+const db = getFirestore(app);
+
+export async function addUser(data) {
+    await setDoc(doc(db, "users", data.username), {
+        username: data.username,
+        email: data.email,
+        name: data.name
+    });
+}
+
+export async function getUserDataByUsername(username) {
+    const docRef = doc(db, "users", username);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+        console.log("No such document");
+    }
+
+    const docSnapData = docSnap.data();
+    return docSnapData;
+}
+
+export async function getUserDataByEmail(email) {
+    const q = query(collection(db, "users"), where("email", "==", email))
+
+    const querySnapshot = await getDocs(q);
+
+    let data = [];
+    querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+    });
+
+    return data[0];
+}
+

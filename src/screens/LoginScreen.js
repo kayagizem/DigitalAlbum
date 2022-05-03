@@ -8,7 +8,11 @@ import { useTheme } from '@react-navigation/native';
 
 import { onSignIn } from '../backend/firebase'
 
+import { useStateValue } from '../StateProvider'
+
 function LoginScreen({ navigation }) {
+    const [state, dispatch] = useStateValue();
+
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -24,6 +28,7 @@ function LoginScreen({ navigation }) {
                     style={styles.input}
                     placeholder='Email'
                     placeholderTextColor={colors.placeholder}
+                    autoCapitalize="none"
                     keyboardType='email-address'
                     onChangeText={(email) => setEmail(email)}
                 />
@@ -32,12 +37,19 @@ function LoginScreen({ navigation }) {
                     placeholder='Password'
                     secureTextEntry={true}
                     placeholderTextColor={colors.placeholder}
+                    autoCapitalize="none"
                     onChangeText={(password) => setPassword(password)}
                 />
 
                 <WideButton
                     text='Log In'
-                    onPress={() => onSignIn({ email: email, password: password })} />
+                    onPress={() => {
+                        onSignIn({ email: email, password: password })
+                        dispatch({
+                            type: 'setUserData',
+                            payload: { email: email }
+                        })
+                    }} />
 
                 <View style={styles.textContainer}>
                     <Text style={styles.linkText}>Forgot your password?</Text>
