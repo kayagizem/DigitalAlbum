@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 
 import AlbumView from '../components/AlbumView';
@@ -7,8 +7,7 @@ import HeaderBar from '../components/HeaderBar';
 import { useTheme } from '@react-navigation/native';
 import { useStateValue } from '../StateProvider';
 
-import { getUserDataByEmail, getUserDataByUsername, onSignOut } from '../backend/firebase';
-import { getAuth } from 'firebase/auth';
+import { onSignOut } from '../backend/firebase';
 
 
 
@@ -36,27 +35,6 @@ function UserProfileScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    useEffect(() => {
-        fetchUser();
-    }, []);
-
-    function fetchUser() {
-        fetchUserAsync();
-    }
-    const fetchUserAsync = async () => {
-        let userData = {};
-        if (state.username != null) {
-            userData = await getUserDataByUsername(state.username);
-        } else {
-            const email = getAuth().currentUser.email;
-            userData = await getUserDataByEmail(email);
-        }
-        dispatch({
-            type: 'setUserData',
-            payload: userData
-        })
-    }
-
     const userData = {
         profilePictureURI: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg',
         name: 'Test User',
@@ -72,12 +50,14 @@ function UserProfileScreen({ navigation }) {
         <View style={styles.screen}>
             <HeaderBar title={state.userData.username}
                 isId
+                leftButtonText="Create"
+                onPressLeft={() => navigation.navigate("Album Creation")}
                 rightButtonText="Sign Out"
                 onPressRight={() => {
                     onSignOut();
                     dispatch({
-                        type: 'setUser',
-                        payload: ''
+                        type: 'setUserData',
+                        payload: {}
                     })
                 }}
             />

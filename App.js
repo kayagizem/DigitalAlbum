@@ -3,22 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { useState } from 'react';
-import { View, Text, LogBox } from 'react-native';
+import { View, Text } from 'react-native';
 
 import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import UserProfileScreen from './src/screens/UserProfileScreen';
-import AlbumScreen from './src/screens/AlbumScreen';
-import AlbumFollowerScreen from './src/screens/AlbumFollowerScreen';
-import SearchScreen from './src/screens/SearchScreen';
 
 import { defaultTheme, darkTheme, greenTheme } from './src/Themes';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 import { StateProvider } from './src/StateProvider';
-
-LogBox.ignoreLogs(['Setting a timer for a long period of time']);
+import MainNavigation from './src/MainNavigation';
 
 const Stack = createStackNavigator();
 
@@ -66,19 +60,7 @@ export default function App() {
     <StateProvider initialState={initialState} reducer={reducer}>
       {loggedIn
         ? (
-          <NavigationContainer theme={theme}>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-                animation: 'fade'
-              }}>
-              <Stack.Screen name="User Profile" component={UserProfileScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="Album" component={AlbumScreen} />
-              <Stack.Screen name="Album Follower" component={AlbumFollowerScreen} />
-              <Stack.Screen name="Search" component={SearchScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
+          <MainNavigation theme={theme} />
         ) : (
           <NavigationContainer theme={theme}>
             <Stack.Navigator

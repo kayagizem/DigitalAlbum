@@ -9,14 +9,11 @@ import {
 
 import {
     getFirestore,
-    doc,
     collection,
     query,
     where,
-    setDoc,
-    getDoc,
+    addDoc,
     getDocs,
-    QuerySnapshot
 } from 'firebase/firestore';
 
 
@@ -32,6 +29,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+// Authentication Part
 const auth = getAuth();
 
 export function signUpFirebase(data) {
@@ -67,12 +65,20 @@ export function onSignOut() {
 const db = getFirestore(app);
 
 export async function addUser(data) {
-    await setDoc(doc(db, "users", data.username), {
+    await addDoc(collection(db, "users"), {
         username: data.username,
         email: data.email,
         name: data.name
     });
 }
+
+
+//  *****************************
+//   DATABASE PART
+//  *****************************
+
+/*
+Do not delete until you are comfortable with firebase.
 
 export async function getUserDataByUsername(username) {
     const docRef = doc(db, "users", username);
@@ -85,9 +91,52 @@ export async function getUserDataByUsername(username) {
     const docSnapData = docSnap.data();
     return docSnapData;
 }
+*/
+
+// Users
+export async function getUserDataByUsername(username) {
+    return getDataFromWhere("users", "username", username);
+}
 
 export async function getUserDataByEmail(email) {
-    const q = query(collection(db, "users"), where("email", "==", email))
+    return getDataFromWhere("users", "email", email);
+}
+
+// Albums
+export async function createAlbum(data) {
+    await addAlbum(data);
+    await addOwnership(data);
+}
+
+export async function addAlbum(data) {
+    addData("albums", {
+        albumName: data.albumName,
+        albumId: data.albumId
+    });
+}
+
+export async function addOwnership(data) {
+    addData("ownerships", {
+        albumId: data.albumId,
+        owner: data.username
+    });
+}
+
+// Image
+
+
+//  *****************************
+//   General Functions
+//  *****************************
+
+// General Function to add data to a given collection
+export async function addData(collection_name, data) {
+    await addDoc(collection(db, collection_name), data);
+}
+
+// General Function to get single data from given collection where given field equals to given value
+export async function getDataFromWhere(collection_name, field_name, field_value) {
+    const q = query(collection(db, collection_name), where(field_name, "==", field_value))
 
     const querySnapshot = await getDocs(q);
 
@@ -98,4 +147,3 @@ export async function getUserDataByEmail(email) {
 
     return data[0];
 }
-
