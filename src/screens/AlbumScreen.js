@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 import HeaderBar from '../components/HeaderBar';
 import ImageView from '../components/ImageView';
 
-import { useTheme } from '@react-navigation/native';
+import { getAlbumData } from '../backend/firebase'
+
+import { useStateValue } from '../StateProvider';
 
 const testData = [
     {
@@ -60,13 +63,26 @@ const testData = [
 ];
 
 function AlbumScreen({ route, navigation }) {
+    const [albumData, setAlbumData] = useState('');
+
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
     const albumId = route.params.albumId;
 
-    const albumData = {
-        name: 'Test Album Name',
+    useEffect(() => {
+        fetchAlbumData();
+    }, []);
+
+    function fetchAlbumData() {
+        fetchAlbumDataAsync();
+    }
+    const fetchAlbumDataAsync = async () => {
+        const albumData = await getAlbumData(albumId);
+        setAlbumData(albumData);
+    }
+
+    const albumData1 = {
         images: testData
     };
 
@@ -74,6 +90,7 @@ function AlbumScreen({ route, navigation }) {
         <ImageView style={{ flex: 1 / 3, margin: 1 }} imageId={item.imageId} image={item.image} author={item.author} titleComment={item.titleComment} nav={navigation} />
     );
 
+    console.log(albumData1)
     return (
         <View style={styles.screen}>
             <HeaderBar title={albumId}
@@ -84,7 +101,7 @@ function AlbumScreen({ route, navigation }) {
             />
 
             <View style={styles.albumBlock}>
-                <Text style={styles.albumName}>{albumData.name}</Text>
+                <Text style={styles.albumName}>{albumData.albumName}</Text>
                 <View style={styles.albumButtonContainer}>
                     <View style={[styles.albumButton,
                     {
@@ -106,7 +123,7 @@ function AlbumScreen({ route, navigation }) {
                 style={{ marginBottom: 5 }}
                 numColumns={1}
                 showsVerticalScrollIndicator={false}
-                data={albumData.images}
+                data={albumData1.images}
                 renderItem={renderImages}
                 keyExtractor={item => item.imageId}
             />

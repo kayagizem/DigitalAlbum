@@ -64,15 +64,6 @@ export function onSignOut() {
 
 const db = getFirestore(app);
 
-export async function addUser(data) {
-    await addDoc(collection(db, "users"), {
-        username: data.username,
-        email: data.email,
-        name: data.name
-    });
-}
-
-
 //  *****************************
 //   DATABASE PART
 //  *****************************
@@ -94,6 +85,17 @@ export async function getUserDataByUsername(username) {
 */
 
 // Users
+
+// POST USER
+export async function addUser(data) {
+    await addDoc(collection(db, "users"), {
+        username: data.username,
+        email: data.email,
+        name: data.name
+    });
+}
+
+// GET USER
 export async function getUserDataByUsername(username) {
     return getDataFromWhere("users", "username", username);
 }
@@ -103,13 +105,23 @@ export async function getUserDataByEmail(email) {
 }
 
 // Albums
+
+// POST ALBUM
 export async function createAlbum(data) {
+    const isValid = await getDataFromWhere("albums", "albumId", data.albumId) == null;
+    console.log(isValid);
+
+    if (!isValid) {
+        return false;
+    }
+
     await addAlbum(data);
     await addOwnership(data);
+    return true;
 }
 
 export async function addAlbum(data) {
-    addData("albums", {
+    await addData("albums", {
         albumName: data.albumName,
         albumId: data.albumId
     });
@@ -120,6 +132,14 @@ export async function addOwnership(data) {
         albumId: data.albumId,
         owner: data.username
     });
+}
+
+export async function getAlbums(username) {
+    return getAllDataFromWhere("ownerships", "owner", username);
+}
+
+export async function getAlbumData(albumId) {
+    return getDataFromWhere("albums", "albumId", albumId);
 }
 
 // Image
@@ -146,4 +166,18 @@ export async function getDataFromWhere(collection_name, field_name, field_value)
     });
 
     return data[0];
+}
+
+// General Function to get single data from given collection where given field equals to given value
+export async function getAllDataFromWhere(collection_name, field_name, field_value) {
+    const q = query(collection(db, collection_name), where(field_name, "==", field_value))
+
+    const querySnapshot = await getDocs(q);
+
+    let data = [];
+    querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+    });
+
+    return data;
 }

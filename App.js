@@ -12,7 +12,8 @@ import { defaultTheme, darkTheme, greenTheme } from './src/Themes';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 import { StateProvider } from './src/StateProvider';
-import MainNavigation from './src/MainNavigation';
+import MainNavigation from './src/navigations/MainNavigation';
+import { onSignOut } from './src/backend/firebase';
 
 const Stack = createStackNavigator();
 

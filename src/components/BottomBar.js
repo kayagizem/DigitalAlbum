@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
+import { createStackNavigator } from '@react-navigation/stack';
+
 import { useTheme } from '@react-navigation/native';
 
 /*
@@ -15,20 +17,9 @@ const HeaderBar = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const leftButton = props.leftButtonText ?
-        (<Pressable style={styles.headerLeftButton}>
-            <Text style={styles.headerText} onPress={props.onPressLeft}>{props.leftButtonText}</Text>
-        </Pressable>) :
-        (<View style={styles.headerLeftButton}></View>);
-
-    const rightButton = props.rightButtonText ?
-        (<Pressable style={styles.headerRightButton}>
-            <Text style={styles.headerText} onPress={props.onPressRight}>{props.rightButtonText}</Text>
-        </Pressable>) :
-        (<View style={styles.headerRightButton}></View>);
-
-    const titleStyle = props.isId ? styles.idTitle : styles.headerTitle;
-
+    const routeConfig = {
+        Home: createStack
+    }
     return (
         <View style={styles.headerBar}>
             {leftButton}

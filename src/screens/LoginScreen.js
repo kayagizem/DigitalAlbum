@@ -48,7 +48,11 @@ function LoginScreen({ navigation }) {
                         dispatch({
                             type: 'setUserData',
                             payload: { email: email }
-                        })
+                        });
+                        dispatch({
+                            type: 'setLoading',
+                            payload: true
+                        });
                     }} />
 
                 <View style={styles.textContainer}>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 import HeaderBar from '../components/HeaderBar';
 
 function SearchScreen({ navigation }) {
