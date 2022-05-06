@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput, FlatList } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
+import FollowerView from '../components/FollowerView';
+
 import HeaderBar from '../components/HeaderBar';
+import { searchUsers } from '../backend/firebase';
 
 function SearchScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [input, setInput] = useState('');
+    const [searchData, setSearchData] = useState({});
+
+    const renderItem = ({ item }) => (
+        <FollowerView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
+    );
 
     return (
         <View style={styles.screen}>
@@ -23,9 +30,18 @@ function SearchScreen({ navigation }) {
                     placeholder='Search'
                     placeholderTextColor={colors.placeholder}
                     autoCapitalize="none"
-                    onChangeText={(input) => setInput(input)}
+                    onChangeText={async (input) => {
+                        const searchData = await searchUsers(input);
+                        setSearchData(searchData);
+                    }}
                 />
 
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={searchData}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.username}
+                />
             </View >
         </View>
     );

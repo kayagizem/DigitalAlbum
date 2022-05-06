@@ -90,7 +90,6 @@ function AlbumScreen({ route, navigation }) {
         <ImageView style={{ flex: 1 / 3, margin: 1 }} imageId={item.imageId} image={item.image} author={item.author} titleComment={item.titleComment} nav={navigation} />
     );
 
-    console.log(albumData1)
     return (
         <View style={styles.screen}>
             <HeaderBar title={albumId}

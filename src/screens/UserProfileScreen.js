@@ -7,13 +7,14 @@ import HeaderBar from '../components/HeaderBar';
 import { useTheme } from '@react-navigation/native';
 import { useStateValue } from '../StateProvider';
 
-import { onSignOut, getAlbums } from '../backend/firebase';
+import { onSignOut, getOwnedAlbums, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
 
 function UserProfileScreen({ navigation }) {
-    const [state, dispatch] = useStateValue();
-    const [albums, setAlbums] = useState({});
     const { colors } = useTheme();
     const styles = createStyle(colors);
+
+    const [state, dispatch] = useStateValue();
+    const [ownedAlbums, setOwnedAlbums] = useState({});
 
     useEffect(() => {
         fetchAlbums();
@@ -23,15 +24,9 @@ function UserProfileScreen({ navigation }) {
         fetchAlbumsAsync();
     }
     const fetchAlbumsAsync = async () => {
-        const albums = await getAlbums(state.userData.username);
-        console.log(albums);
-        setAlbums(albums);
+        const ownedAlbums = await getOwnedAlbums(state.userData.username);
+        setOwnedAlbums(ownedAlbums);
     }
-
-    const userData = {
-        profilePictureURI: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg',
-        biography: 'Test biography',
-    };
 
     const renderAlbums = ({ item }) => (
         <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} image={item.image} nav={navigation} />
@@ -56,7 +51,7 @@ function UserProfileScreen({ navigation }) {
             <View style={styles.profileBlock}>
                 <View style={styles.profileContainer}>
                     <Image style={styles.profilePicture}
-                        source={{ uri: userData.profilePictureURI }}>
+                        source={{ uri: state.userData.profilePictureURI }}>
                     </Image>
                     <View style={styles.profileButtonContainer}>
                         <View style={[styles.profileButton,
@@ -76,14 +71,14 @@ function UserProfileScreen({ navigation }) {
                     </View>
                 </View>
                 <Text style={styles.profileName}>{state.userData.name}</Text>
-                <Text style={styles.profileBio} numberOfLines={4}>{userData.biography}
+                <Text style={styles.profileBio} numberOfLines={4}>{state.userData.biography}
                 </Text>
             </View>
             <FlatList
                 style={{ marginBottom: 5 }}
                 numColumns={3}
                 showsVerticalScrollIndicator={false}
-                data={albums}
+                data={ownedAlbums}
                 renderItem={renderAlbums}
                 keyExtractor={item => item.albumId}
             />

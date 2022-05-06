@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 
 import AlbumView from '../components/AlbumView';
 import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
+
+import { getOwnedAlbums, getContributedAlbums, getFollowedAlbums, getUserDataByUsername } from '../backend/firebase';
 
 const testData = [
     {
@@ -26,16 +28,38 @@ const testData = [
 ];
 
 function ProfileScreen({ route, navigation }) {
+    const [userData, setUserData] = useState({});
+    const [ownedAlbums, setOwnedAlbums] = useState({});
+
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
     const username = route.params.username;
 
-    const userData = {
+    useEffect(() => {
+        fetchUser();
+        fetchAlbums();
+    }, []);
+
+    function fetchAlbums() {
+        fetchAlbumsAsync();
+    }
+    const fetchAlbumsAsync = async () => {
+        const ownedAlbums = await getOwnedAlbums(username);
+        setOwnedAlbums(ownedAlbums);
+    }
+
+    function fetchUser() {
+        fetchUserAsync();
+    }
+    const fetchUserAsync = async () => {
+        const userData = await getUserDataByUsername(username);
+        setUserData(userData);
+    }
+
+    const userData1 = {
         profilePictureURI: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg',
-        name: 'Test User',
         biography: 'Test biography',
-        albums: testData
     };
 
     const renderAlbums = ({ item }) => (
@@ -80,7 +104,7 @@ function ProfileScreen({ route, navigation }) {
                 style={{ marginBottom: 5 }}
                 numColumns={3}
                 showsVerticalScrollIndicator={false}
-                data={userData.albums}
+                data={ownedAlbums}
                 renderItem={renderAlbums}
                 keyExtractor={item => item.albumId}
             />

@@ -14,6 +14,7 @@ import {
     where,
     addDoc,
     getDocs,
+    Timestamp,
 } from 'firebase/firestore';
 
 
@@ -91,7 +92,11 @@ export async function addUser(data) {
     await addDoc(collection(db, "users"), {
         username: data.username,
         email: data.email,
-        name: data.name
+        name: data.name,
+        biography: '',
+        profilePictureURI: '',
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now()
     });
 }
 
@@ -116,33 +121,83 @@ export async function createAlbum(data) {
     }
 
     await addAlbum(data);
-    await addOwnership(data);
+    await addOwner(data);
+    await addContributor(data);
+    await addFollower(data);
     return true;
 }
 
 export async function addAlbum(data) {
     await addData("albums", {
         albumName: data.albumName,
-        albumId: data.albumId
-    });
-}
-
-export async function addOwnership(data) {
-    addData("ownerships", {
         albumId: data.albumId,
-        owner: data.username
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now()
     });
 }
 
-export async function getAlbums(username) {
-    return getAllDataFromWhere("ownerships", "owner", username);
+export async function addOwner(data) {
+    addData("owners", {
+        albumId: data.albumId,
+        username: data.username,
+        dateCreated: Timestamp.now()
+    });
 }
 
+export async function addContributor(data) {
+    addData("contributors", {
+        albumId: data.albumId,
+        username: data.username,
+        dateCreated: Timestamp.now()
+    });
+}
+
+export async function addFollower(data) {
+    addData("followers", {
+        albumId: data.albumId,
+        username: data.username,
+        dateCreated: Timestamp.now()
+    });
+}
+
+// Username: String -> Album List: []
+export async function getOwnedAlbums(username) {
+    return getAllDataFromWhere("owners", "username", username);
+}
+
+// Username: String -> Album List: []
+export async function getContributedAlbums(username) {
+    return getAllDataFromWhere("contributors", "username", username);
+}
+
+// Username: String -> Album List: []
+export async function getFollowedAlbums(username) {
+    return getAllDataFromWhere("followers", "username", username);
+}
+
+// Album ID: String -> Album Data: {}
 export async function getAlbumData(albumId) {
     return getDataFromWhere("albums", "albumId", albumId);
 }
 
 // Image
+
+
+// Search
+export async function searchUsers(str) {
+    const to = str.replace(/.$/, c => String.fromCharCode(c.charCodeAt(0) + 1));
+
+    const q = query(collection(db, "users"), where("username", ">=", str), where("username", "<", to));
+
+    const querySnapshot = await getDocs(q);
+
+    let data = [];
+    querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+    });
+
+    return data;
+}
 
 
 //  *****************************

@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 import UserStackNavigator from './UserStackNavigator';
 import SearchStackNavigator from './SearchStackNavigator';
@@ -54,21 +54,21 @@ function MainNavigation({ theme }) {
     return (
         <NavigationContainer theme={theme}>
             <Tab.Navigator
-                initialRouteName="User"
+                initialRouteName="User Stack"
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let icon;
 
-                        if (route.name === 'User') {
+                        if (route.name === 'User Stack') {
                             let iconName = focused
                                 ? 'user-circle-o'
                                 : 'user-circle';
                             icon = <FontAwesome name={iconName} size={size} color={color} />;
-                        } else if (route.name === 'Search') {
+                        } else if (route.name === 'Search Stack') {
                             let iconName = focused
                                 ? 'search'
                                 : 'search';
-                            icon = <Ionicons name={iconName} size={size} color={color} />;
+                            icon = <FontAwesome name={iconName} size={size} color={color} />;
                         }
 
                         return icon;
@@ -76,8 +76,8 @@ function MainNavigation({ theme }) {
                     headerShown: false,
                     animation: 'fade'
                 })}>
-                <Tab.Screen name="Search" component={SearchStackNavigator} />
-                <Tab.Screen name="User" component={UserStackNavigator} />
+                <Tab.Screen name="Search Stack" component={SearchStackNavigator} />
+                <Tab.Screen name="User Stack" component={UserStackNavigator} />
             </Tab.Navigator>
         </NavigationContainer >
     );
