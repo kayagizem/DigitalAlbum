@@ -11,12 +11,12 @@ const ImageView = (props) => {
         <View style={props.style}>
             <View style={styles.ImageViewContainer}>
                 <Image style={styles.albumImage}
-                    source={{ uri: props.image }}>
+                    source={{ uri: props.imageURI }}>
                 </Image>
                 <View style={styles.commentContainer}>
                     <Text style={styles.authorUsername}
-                        onPress={() => props.nav.navigate('Profile', { username: props.author })} >{props.author}</Text>
-                    <Text style={styles.comment}>{props.titleComment}</Text>
+                        onPress={() => props.nav.navigate('Profile', { username: props.username })} >{props.username}</Text>
+                    <Text style={styles.comment}>{props.caption}</Text>
                 </View>
             </View>
         </View >

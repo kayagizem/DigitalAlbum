@@ -15,7 +15,10 @@ import {
     addDoc,
     getDocs,
     Timestamp,
+    snapshotEqual,
 } from 'firebase/firestore';
+
+import { getStorage, uploadBytes, ref, getDownloadURL } from 'firebase/storage';
 
 
 const firebaseConfig = {
@@ -180,9 +183,6 @@ export async function getAlbumData(albumId) {
     return getDataFromWhere("albums", "albumId", albumId);
 }
 
-// Image
-
-
 // Search
 export async function searchUsers(str) {
     const to = str.replace(/.$/, c => String.fromCharCode(c.charCodeAt(0) + 1));
@@ -235,4 +235,53 @@ export async function getAllDataFromWhere(collection_name, field_name, field_val
     });
 
     return data;
+}
+
+
+
+// POST IMAGE
+const storage = getStorage();
+
+export async function postImage(data) {
+    const metadata = {
+        contentType: 'image/jpeg'
+    }
+
+    const resp = await fetch(data.imageURI);
+    const blob = await resp.blob();
+
+    const randomAddress = Math.floor(100000 + Math.random() * 900000);
+    const path = 'images/' + data.username + '/' + randomAddress + '.jpg';
+
+    const storageRef = ref(storage, path);
+
+    uploadBytes(storageRef, blob, metadata).then((snapshot) => {
+        console.log('Uploaded a blob or file');
+        getDownloadURL(storageRef)
+            .then((url) => {
+                const postData = {
+                    albumId: data.albumId,
+                    username: data.username,
+                    caption: data.caption,
+                    imageURI: url
+                }
+                addPost(postData);
+            })
+    });
+
+}
+
+export async function addPost(data) {
+    await addData("posts", {
+        albumId: data.albumId,
+        username: data.username,
+        caption: data.caption,
+        imageURI: data.imageURI,
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now()
+    });
+}
+
+export async function getPosts(albumId) {
+    return getAllDataFromWhere("posts", "albumId", albumId);
 }

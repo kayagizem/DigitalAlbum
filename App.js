@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, LogBox } from 'react-native';
 
 import SignUpScreen from './src/screens/SignUpScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -16,6 +16,9 @@ import MainNavigation from './src/navigations/MainNavigation';
 import { onSignOut } from './src/backend/firebase';
 
 const Stack = createStackNavigator();
+
+LogBox.ignoreLogs(['Setting a timer',
+  'Async Storage has been extracted from react-native core']);
 
 export default function App() {
   const initialState = {

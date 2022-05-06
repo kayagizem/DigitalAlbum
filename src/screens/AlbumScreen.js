@@ -5,65 +5,11 @@ import { useTheme } from '@react-navigation/native';
 import HeaderBar from '../components/HeaderBar';
 import ImageView from '../components/ImageView';
 
-import { getAlbumData } from '../backend/firebase'
-
-import { useStateValue } from '../StateProvider';
-
-const testData = [
-    {
-        author: 'test_user1',
-        titleComment: 'naber',
-        imageId: 'primat_musicians',
-        image: 'https://cdn.pixabay.com/photo/2018/06/30/09/29/monkey-3507317_960_720.jpg'
-    },
-    {
-        imageId: 'holiday',
-        image: 'https://cdn.pixabay.com/photo/2017/06/11/00/52/molokaii-2391242_960_720.jpg'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2016/11/14/22/18/beach-1824855_960_720.jpg',
-        imageId: 'digitalalbumholiday3423412'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre1'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre2'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre3'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre4'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre5'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre6'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre7'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre8'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        imageId: 'tigers.of.emre9'
-    },
-];
+import { getAlbumData, getPosts } from '../backend/firebase'
 
 function AlbumScreen({ route, navigation }) {
     const [albumData, setAlbumData] = useState('');
+    const [posts, setPosts] = useState({});
 
     const { colors } = useTheme();
     const styles = createStyle(colors);
@@ -72,6 +18,7 @@ function AlbumScreen({ route, navigation }) {
 
     useEffect(() => {
         fetchAlbumData();
+        fetchPosts();
     }, []);
 
     function fetchAlbumData() {
@@ -82,12 +29,16 @@ function AlbumScreen({ route, navigation }) {
         setAlbumData(albumData);
     }
 
-    const albumData1 = {
-        images: testData
-    };
+    function fetchPosts() {
+        fetchPostsAsync();
+    }
+    const fetchPostsAsync = async () => {
+        const posts = await getPosts(albumId);
+        setPosts(posts);
+    }
 
     const renderImages = ({ item }) => (
-        <ImageView style={{ flex: 1 / 3, margin: 1 }} imageId={item.imageId} image={item.image} author={item.author} titleComment={item.titleComment} nav={navigation} />
+        <ImageView style={{ flex: 1 / 3, margin: 1 }} imageURI={item.imageURI} username={item.username} caption={item.caption} nav={navigation} />
     );
 
     return (
@@ -96,7 +47,8 @@ function AlbumScreen({ route, navigation }) {
                 isId
                 leftButtonText="Back"
                 onPressLeft={() => navigation.goBack()}
-                rightButtonText="Settings"
+                rightButtonText="Post"
+                onPressRight={() => navigation.navigate("Post Creation", { albumId: albumId })}
             />
 
             <View style={styles.albumBlock}>
@@ -122,9 +74,9 @@ function AlbumScreen({ route, navigation }) {
                 style={{ marginBottom: 5 }}
                 numColumns={1}
                 showsVerticalScrollIndicator={false}
-                data={albumData1.images}
+                data={posts}
                 renderItem={renderImages}
-                keyExtractor={item => item.imageId}
+                keyExtractor={item => item.imageURI}
             />
         </View >
     );
