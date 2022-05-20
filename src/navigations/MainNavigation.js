@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import UserStackNavigator from './UserStackNavigator';
 import SearchStackNavigator from './SearchStackNavigator';
@@ -15,6 +15,8 @@ import { useStateValue } from '../StateProvider';
 import { getAuth } from 'firebase/auth';
 
 import { getUserDataByEmail, getUserDataByUsername } from '../backend/firebase';
+import SettingsStackNavigator from './SettingsStackNavigator';
+import HomeStackNavigator from './HomeStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -61,23 +63,36 @@ function MainNavigation({ theme }) {
 
                         if (route.name === 'User Stack') {
                             let iconName = focused
-                                ? 'user-circle-o'
-                                : 'user-circle';
-                            icon = <FontAwesome name={iconName} size={size} color={color} />;
+                                ? 'person'
+                                : 'person-outline';
+                            icon = <Ionicons name={iconName} size={size} color={color} />;
                         } else if (route.name === 'Search Stack') {
                             let iconName = focused
                                 ? 'search'
-                                : 'search';
-                            icon = <FontAwesome name={iconName} size={size} color={color} />;
+                                : 'search-outline';
+                            icon = <Ionicons name={iconName} size={size} color={color} />;
+                        } else if (route.name === 'Settings Stack') {
+                            let iconName = focused
+                                ? 'settings'
+                                : 'settings-outline';
+                            icon = <Ionicons name={iconName} size={size} color={color} />;
+                        } else if (route.name === 'Home Stack') {
+                            let iconName = focused
+                                ? 'home'
+                                : 'home-outline';
+                            icon = <Ionicons name={iconName} size={size} color={color} />;
                         }
 
                         return icon;
                     },
                     headerShown: false,
-                    animation: 'fade'
+                    animation: 'fade',
+                    tabBarShowLabel: false
                 })}>
+                <Tab.Screen name="Home Stack" component={HomeStackNavigator} />
                 <Tab.Screen name="Search Stack" component={SearchStackNavigator} />
                 <Tab.Screen name="User Stack" component={UserStackNavigator} />
+                <Tab.Screen name="Settings Stack" component={SettingsStackNavigator} />
             </Tab.Navigator>
         </NavigationContainer >
     );

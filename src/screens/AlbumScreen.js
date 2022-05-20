@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, RefreshControl, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import HeaderBar from '../components/HeaderBar';
@@ -7,14 +7,25 @@ import ImageView from '../components/ImageView';
 
 import { getAlbumData, getPosts } from '../backend/firebase'
 
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 function AlbumScreen({ route, navigation }) {
+    const albumId = route.params.albumId;
     const [albumData, setAlbumData] = useState('');
     const [posts, setPosts] = useState({});
 
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const albumId = route.params.albumId;
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchPosts();
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
 
     useEffect(() => {
         fetchAlbumData();
@@ -77,6 +88,12 @@ function AlbumScreen({ route, navigation }) {
                 data={posts}
                 renderItem={renderImages}
                 keyExtractor={item => item.imageURI}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             />
         </View >
     );

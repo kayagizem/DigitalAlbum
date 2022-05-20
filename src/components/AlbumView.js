@@ -12,7 +12,7 @@ const AlbumView = (props) => {
             <Pressable onPress={() => props.nav.navigate('Album', { albumId: props.albumId })} >
                 <View style={styles.albumContainer}>
                     <Image style={styles.albumImage}
-                        source={{ uri: props.image }}>
+                        source={{ uri: props.albumCoverURI }}>
                     </Image>
                     <Text style={styles.albumId} numberOfLines={1}>{props.albumId}</Text>
                 </View>

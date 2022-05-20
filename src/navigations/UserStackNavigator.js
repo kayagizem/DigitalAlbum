@@ -8,6 +8,7 @@ import AlbumScreen from '../screens/AlbumScreen';
 import AlbumFollowerScreen from '../screens/AlbumFollowerScreen';
 import AlbumCreationScreen from '../screens/AlbumCreationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
+import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
 
 const UserStack = createStackNavigator();
 
@@ -19,6 +20,7 @@ export default function UserStackNavigator() {
                 animation: 'fade'
             }}>
             <UserStack.Screen name="User Profile" component={UserProfileScreen} />
+            <UserStack.Screen name="Profile Settings" component={ProfileSettingsScreen} />
             <UserStack.Screen name="Album Creation" component={AlbumCreationScreen} />
             <UserStack.Screen name="Profile" component={ProfileScreen} />
             <UserStack.Screen name="Album" component={AlbumScreen} />

@@ -44,7 +44,6 @@ const createStyle = (colors) => StyleSheet.create({
     headerBar: {
         paddingHorizontal: 25,
         paddingVertical: 15,
-        marginTop: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

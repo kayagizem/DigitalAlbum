@@ -10,9 +10,11 @@ import {
 import {
     getFirestore,
     collection,
+    doc,
     query,
     where,
     addDoc,
+    setDoc,
     getDocs,
     Timestamp,
     snapshotEqual,
@@ -63,7 +65,7 @@ export function onSignOut() {
 
     }).catch((error) => {
 
-    })
+    });
 }
 
 const db = getFirestore(app);
@@ -103,6 +105,42 @@ export async function addUser(data) {
     });
 }
 
+export async function setProfilePicture(data) {
+    const metadata = {
+        contentType: 'image/jpeg'
+    };
+
+    const resp = await fetch(data.imageURI);
+    const blob = await resp.blob();
+
+    const randomAddress = Math.floor(100000 + Math.random() * 900000);
+    const path = 'images/' + data.username + '/' + randomAddress + '.jpg';
+
+    const storageRef = ref(storage, path);
+
+    let userId = await getIdFromWhere("users", "username", data.username)
+    uploadBytes(storageRef, blob, metadata).then((snapshot) => {
+        getDownloadURL(storageRef)
+            .then((url) => {
+                setDoc(doc(db, "users", userId), {
+                    profilePictureURI: url,
+                }, {
+                    merge: true,
+                });
+            });
+        console.log('Updated profile picture');
+    });
+}
+
+export async function setBiography(data) {
+    let userId = await getIdFromWhere("users", "username", data.username)
+    await setDoc(doc(db, "users", userId), {
+        biography: data.biography,
+    }, {
+        merge: true,
+    });
+}
+
 // GET USER
 export async function getUserDataByUsername(username) {
     return getDataFromWhere("users", "username", username);
@@ -120,6 +158,7 @@ export async function createAlbum(data) {
     console.log(isValid);
 
     if (!isValid) {
+        console.log("AlbumId is being used")
         return false;
     }
 
@@ -134,6 +173,7 @@ export async function addAlbum(data) {
     await addData("albums", {
         albumName: data.albumName,
         albumId: data.albumId,
+        albumCoverURI: '',
         dateCreated: Timestamp.now(),
         dateUpdated: Timestamp.now()
     });
@@ -199,6 +239,21 @@ export async function searchUsers(str) {
     return data;
 }
 
+export async function searchAlbums(str) {
+    const to = str.replace(/.$/, c => String.fromCharCode(c.charCodeAt(0) + 1));
+
+    const q = query(collection(db, "albums"), where("albumId", ">=", str), where("albumId", "<", to));
+
+    const querySnapshot = await getDocs(q);
+
+    let data = [];
+    querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+    });
+
+    return data;
+}
+
 
 //  *****************************
 //   General Functions
@@ -211,7 +266,7 @@ export async function addData(collection_name, data) {
 
 // General Function to get single data from given collection where given field equals to given value
 export async function getDataFromWhere(collection_name, field_name, field_value) {
-    const q = query(collection(db, collection_name), where(field_name, "==", field_value))
+    const q = query(collection(db, collection_name), where(field_name, "==", field_value));
 
     const querySnapshot = await getDocs(q);
 
@@ -225,7 +280,7 @@ export async function getDataFromWhere(collection_name, field_name, field_value)
 
 // General Function to get single data from given collection where given field equals to given value
 export async function getAllDataFromWhere(collection_name, field_name, field_value) {
-    const q = query(collection(db, collection_name), where(field_name, "==", field_value))
+    const q = query(collection(db, collection_name), where(field_name, "==", field_value));
 
     const querySnapshot = await getDocs(q);
 
@@ -237,7 +292,18 @@ export async function getAllDataFromWhere(collection_name, field_name, field_val
     return data;
 }
 
+export async function getIdFromWhere(collection_name, field_name, field_value) {
+    const q = query(collection(db, collection_name), where(field_name, "==", field_value));
 
+    const querySnapshot = await getDocs(q);
+
+    let userId = '';
+    querySnapshot.forEach((doc) => {
+        userId = doc.id;
+    });
+
+    return userId;
+}
 
 // POST IMAGE
 const storage = getStorage();
@@ -245,7 +311,7 @@ const storage = getStorage();
 export async function postImage(data) {
     const metadata = {
         contentType: 'image/jpeg'
-    }
+    };
 
     const resp = await fetch(data.imageURI);
     const blob = await resp.blob();
@@ -258,7 +324,7 @@ export async function postImage(data) {
     uploadBytes(storageRef, blob, metadata).then((snapshot) => {
         console.log('Uploaded a blob or file');
         getDownloadURL(storageRef)
-            .then((url) => {
+            .then(async (url) => {
                 const postData = {
                     albumId: data.albumId,
                     username: data.username,
@@ -266,9 +332,16 @@ export async function postImage(data) {
                     imageURI: url
                 }
                 addPost(postData);
-            })
-    });
 
+                let albumId = await getIdFromWhere("albums", "albumId", data.albumId)
+                setDoc(doc(db, "albums", albumId), {
+                    albumCoverURI: url,
+                }, {
+                    merge: true,
+                });
+                console.log("Album Cover set.")
+            });
+    });
 }
 
 export async function addPost(data) {

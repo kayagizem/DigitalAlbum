@@ -13,7 +13,6 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth';
 
 import { StateProvider } from './src/StateProvider';
 import MainNavigation from './src/navigations/MainNavigation';
-import { onSignOut } from './src/backend/firebase';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +22,7 @@ LogBox.ignoreLogs(['Setting a timer',
 export default function App() {
   const initialState = {
     userData: {}
-  }
+  };
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -37,9 +36,9 @@ export default function App() {
       default:
         return state;
     }
-  }
+  };
 
-  theme = setTheme(0);
+  const theme = setTheme(2);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -53,12 +52,11 @@ export default function App() {
       setLoggedIn(false);
       setLoading(false);
     }
-  })
-
+  });
   if (loading) {
     return (
       <View><Text>Loading Screen </Text></View>
-    )
+    );
   }
   return (
     <StateProvider initialState={initialState} reducer={reducer}>
@@ -83,7 +81,7 @@ export default function App() {
 }
 
 export const setTheme = (themeCode) => {
-  theme = defaultTheme;
+  let theme = defaultTheme;
   switch (themeCode) {
     case 1:
       theme = darkTheme;
@@ -93,4 +91,4 @@ export const setTheme = (themeCode) => {
       break;
   }
   return theme;
-}
+};

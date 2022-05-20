@@ -6,7 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import FollowerView from '../components/FollowerView';
 
 import HeaderBar from '../components/HeaderBar';
-import { searchUsers } from '../backend/firebase';
+import { searchAlbums, searchUsers } from '../backend/firebase';
 
 function SearchScreen({ navigation }) {
     const { colors } = useTheme();
@@ -15,7 +15,7 @@ function SearchScreen({ navigation }) {
     const [searchData, setSearchData] = useState({});
 
     const renderItem = ({ item }) => (
-        <FollowerView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
+        <FollowerView style={{ marginVertical: 4 }} username={item.username} profilePictureURI={item.profilePictureURI} nav={navigation} />
     );
 
     return (
@@ -31,7 +31,10 @@ function SearchScreen({ navigation }) {
                     placeholderTextColor={colors.placeholder}
                     autoCapitalize="none"
                     onChangeText={async (input) => {
-                        const searchData = await searchUsers(input);
+                        let searchData = {}
+                        if (input[0] == "@") {
+                            searchData = await searchUsers(input.substring(1));
+                        }
                         setSearchData(searchData);
                     }}
                 />

@@ -17,7 +17,7 @@ function PostCreationScreen({ route, navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [imageURI, setImageURI] = useState(null);
+    const [imageURI, setImageURI] = useState('');
     const [caption, setCaption] = useState('');
 
     const pickImage = async () => {
@@ -41,11 +41,7 @@ function PostCreationScreen({ route, navigation }) {
 
             <View style={styles.content}>
 
-                <WideButton
-                    text='Pick Image'
-                    onPress={pickImage} />
-
-                {imageURI != null
+                {imageURI != ''
                     ? <Image source={{ uri: imageURI }} style={{ width: 200, height: 200, marginVertical: 25 }} />
                     : <View />
                 }
@@ -58,6 +54,11 @@ function PostCreationScreen({ route, navigation }) {
                 />
 
                 <WideButton
+                    text='Pick Image'
+                    onPress={pickImage} />
+
+
+                <WideButton
                     text='Post'
                     onPress={() => {
                         const data = {
@@ -67,6 +68,7 @@ function PostCreationScreen({ route, navigation }) {
                             imageURI: imageURI
                         }
                         postImage(data)
+                        navigation.goBack();
                     }} />
             </View >
         </View>

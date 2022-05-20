@@ -50,6 +50,7 @@ function AlbumCreationScreen({ navigation }) {
                             username: state.userData.username
                         }
                         createAlbum(data);
+                        navigation.navigate("User Profile")
                     }} />
 
                 <View style={styles.textContainer}>

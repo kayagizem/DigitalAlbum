@@ -6,26 +6,7 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
-import { getOwnedAlbums, getContributedAlbums, getFollowedAlbums, getUserDataByUsername } from '../backend/firebase';
-
-const testData = [
-    {
-        albumId: 'primat_musicians',
-        image: 'https://cdn.pixabay.com/photo/2018/06/30/09/29/monkey-3507317_960_720.jpg'
-    },
-    {
-        albumId: 'holiday',
-        image: 'https://cdn.pixabay.com/photo/2017/06/11/00/52/molokaii-2391242_960_720.jpg'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2016/11/14/22/18/beach-1824855_960_720.jpg',
-        albumId: 'digitalalbumholiday3423412'
-    },
-    {
-        image: 'https://cdn.pixabay.com/photo/2015/01/07/11/31/tigers-591359_960_720.jpg',
-        albumId: 'tigers.of.emre'
-    },
-];
+import { getOwnedAlbums, getAlbumData, getUserDataByUsername } from '../backend/firebase';
 
 function ProfileScreen({ route, navigation }) {
     const [userData, setUserData] = useState({});
@@ -46,7 +27,13 @@ function ProfileScreen({ route, navigation }) {
     }
     const fetchAlbumsAsync = async () => {
         const ownedAlbums = await getOwnedAlbums(username);
-        setOwnedAlbums(ownedAlbums);
+        let ownedAlbumData = []
+        for (let i = 0; i < ownedAlbums.length; i++) {
+            let data = await getAlbumData(ownedAlbums[i].albumId);
+            ownedAlbumData.push(data);
+        }
+        ownedAlbumData = ownedAlbumData.sort((a, b) => b.dateCreated - a.dateCreated)
+        setOwnedAlbums(ownedAlbumData);
     }
 
     function fetchUser() {
@@ -57,13 +44,8 @@ function ProfileScreen({ route, navigation }) {
         setUserData(userData);
     }
 
-    const userData1 = {
-        profilePictureURI: 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_960_720.jpg',
-        biography: 'Test biography',
-    };
-
     const renderAlbums = ({ item }) => (
-        <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} image={item.image} nav={navigation} />
+        <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} />
     );
 
     return (

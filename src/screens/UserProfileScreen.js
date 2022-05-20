@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import AlbumView from '../components/AlbumView';
 import HeaderBar from '../components/HeaderBar';
@@ -7,7 +7,11 @@ import HeaderBar from '../components/HeaderBar';
 import { useTheme } from '@react-navigation/native';
 import { useStateValue } from '../StateProvider';
 
-import { onSignOut, getOwnedAlbums, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
+import { onSignOut, getOwnedAlbums, getAlbumData } from '../backend/firebase';
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 function UserProfileScreen({ navigation }) {
     const { colors } = useTheme();
@@ -15,6 +19,15 @@ function UserProfileScreen({ navigation }) {
 
     const [state, dispatch] = useStateValue();
     const [ownedAlbums, setOwnedAlbums] = useState({});
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchAlbums();
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+
 
     useEffect(() => {
         fetchAlbums();
@@ -25,11 +38,17 @@ function UserProfileScreen({ navigation }) {
     }
     const fetchAlbumsAsync = async () => {
         const ownedAlbums = await getOwnedAlbums(state.userData.username);
-        setOwnedAlbums(ownedAlbums);
+        let ownedAlbumData = []
+        for (let i = 0; i < ownedAlbums.length; i++) {
+            let data = await getAlbumData(ownedAlbums[i].albumId);
+            ownedAlbumData.push(data);
+        }
+        ownedAlbumData = ownedAlbumData.sort((a, b) => b.dateCreated - a.dateCreated)
+        setOwnedAlbums(ownedAlbumData);
     }
 
     const renderAlbums = ({ item }) => (
-        <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} image={item.image} nav={navigation} />
+        <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} />
     );
 
     return (
@@ -38,13 +57,9 @@ function UserProfileScreen({ navigation }) {
                 isId
                 leftButtonText="Create"
                 onPressLeft={() => navigation.navigate("Album Creation")}
-                rightButtonText="Sign Out"
+                rightButtonText="Settings"
                 onPressRight={() => {
-                    onSignOut();
-                    dispatch({
-                        type: 'setUserData',
-                        payload: {}
-                    });
+                    navigation.navigate("Profile Settings");
                 }}
             />
 
@@ -81,6 +96,12 @@ function UserProfileScreen({ navigation }) {
                 data={ownedAlbums}
                 renderItem={renderAlbums}
                 keyExtractor={item => item.albumId}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             />
         </View >
     );

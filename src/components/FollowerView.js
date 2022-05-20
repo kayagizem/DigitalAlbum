@@ -12,7 +12,7 @@ const FollowerView = (props) => {
             <Pressable onPress={() => props.nav.navigate('Profile', { username: props.username })} >
                 <View style={styles.followerContainer}>
                     <Image style={styles.profilePicture}
-                        source={{ uri: props.image }}>
+                        source={{ uri: props.profilePictureURI }}>
                     </Image>
                     <Text style={styles.username}>{props.username}</Text>
                 </View>
