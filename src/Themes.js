@@ -10,6 +10,10 @@ export const defaultTheme = {
         button: '#5AA2B1',
         buttonPressed: '#69CCE2',
 
+        followButton: '#5AA2B1',
+        followButtonPressed: '#69CCE2',
+        followButtonText: '#ffffff',
+
         text: '#073D48',
         buttonText: '#ffffff',
         headerText: '#000000',
@@ -55,6 +59,10 @@ export const greenTheme = {
         card: '#f8f8f8',
         button: '#488746',
         buttonPressed: '#5ca15a',
+
+        followButton: '#cfcfcf',
+        followButtonPressed: '#cfcfcf',
+        followButtonText: '#333333',
 
         text: '#2f472e',
         buttonText: '#ffffff',

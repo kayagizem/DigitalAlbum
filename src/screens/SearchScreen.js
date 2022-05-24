@@ -3,19 +3,25 @@ import { View, StyleSheet, TextInput, FlatList } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
-import FollowerView from '../components/FollowerView';
+import UserView from '../components/UserView';
 
 import HeaderBar from '../components/HeaderBar';
 import { searchAlbums, searchUsers } from '../backend/firebase';
+import AlbumSearchView from '../components/AlbumSearchView';
 
 function SearchScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [searchData, setSearchData] = useState({});
+    const [input, setInput] = useState("");
+    const [searchData, setSearchData] = useState([]);
 
-    const renderItem = ({ item }) => (
-        <FollowerView style={{ marginVertical: 4 }} username={item.username} profilePictureURI={item.profilePictureURI} nav={navigation} />
+    const renderUsers = ({ item }) => (
+        <UserView style={{ marginVertical: 4 }} username={item.username} profilePictureURI={item.profilePictureURI} nav={navigation} />
+    );
+
+    const renderAlbums = ({ item }) => (
+        <AlbumSearchView style={{ marginVertical: 4 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} />
     );
 
     return (
@@ -31,20 +37,33 @@ function SearchScreen({ navigation }) {
                     placeholderTextColor={colors.placeholder}
                     autoCapitalize="none"
                     onChangeText={async (input) => {
+                        setInput(input);
                         let searchData = {}
                         if (input[0] == "@") {
                             searchData = await searchUsers(input.substring(1));
+                        } else {
+                            searchData = await searchAlbums(input);
                         }
                         setSearchData(searchData);
                     }}
                 />
 
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={searchData}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.username}
-                />
+                {(input[0] == "@")
+                    ? (
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            data={searchData}
+                            renderItem={renderUsers}
+                            keyExtractor={item => item.username}
+                        />
+                    ) : (
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            data={searchData}
+                            renderItem={renderAlbums}
+                            keyExtractor={item => item.albumId}
+                        />
+                    )}
             </View >
         </View>
     );

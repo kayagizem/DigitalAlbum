@@ -12,7 +12,7 @@ import SearchScreen from '../screens/SearchScreen';
 
 const SearchStack = createStackNavigator();
 
-export default function SearchStackNavigator() {
+function SearchStackNavigator() {
     return (
         <SearchStack.Navigator
             screenOptions={{
@@ -28,3 +28,5 @@ export default function SearchStackNavigator() {
         </SearchStack.Navigator>
     );
 }
+
+export default SearchStackNavigator;

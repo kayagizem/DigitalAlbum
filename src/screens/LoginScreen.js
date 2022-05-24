@@ -8,11 +8,7 @@ import { useTheme } from '@react-navigation/native';
 
 import { onSignIn } from '../backend/firebase'
 
-import { useStateValue } from '../StateProvider'
-
 function LoginScreen({ navigation }) {
-    const [state, dispatch] = useStateValue();
-
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -45,14 +41,6 @@ function LoginScreen({ navigation }) {
                     text='Log In'
                     onPress={() => {
                         onSignIn({ email: email, password: password })
-                        dispatch({
-                            type: 'setUserData',
-                            payload: { email: email }
-                        });
-                        dispatch({
-                            type: 'setLoading',
-                            payload: true
-                        });
                     }} />
 
                 <View style={styles.textContainer}>

@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
-const AlbumView = (props) => {
+const AlbumSearchView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -13,39 +13,39 @@ const AlbumView = (props) => {
                 <View style={styles.albumContainer}>
                     {props.albumCoverURI != ""
                         ? (
-                            <Image style={styles.albumImage}
+                            <Image style={styles.albumCover}
                                 source={{ uri: props.albumCoverURI }}>
                             </Image>
                         ) : (
-                            <View style={styles.albumImage}>
+                            <View style={styles.albumCover}>
                             </View>
                         )
                     }
-                    <Text style={styles.albumId} numberOfLines={1}>{props.albumId}</Text>
+                    <Text style={styles.albumId}>{props.albumId}</Text>
                 </View>
             </Pressable>
-        </View>
+        </View >
     )
 }
 
 const createStyle = (colors) => StyleSheet.create({
     albumContainer: {
-        padding: 1,
-        backgroundColor: colors.card,
+        padding: 10,
         alignItems: 'center',
-        borderRadius: 2
+        flexDirection: 'row',
+        backgroundColor: colors.card
     },
-    albumImage: {
-        width: '100%',
-        aspectRatio: 1,
-        borderRadius: 2
+    albumCover: {
+        width: 50,
+        height: 50,
+        borderRadius: 45,
     },
     albumId: {
-        fontSize: 12,
-        color: colors.text,
+        fontSize: 14,
         fontWeight: 'bold',
-        margin: 4
+        marginLeft: 15,
+        color: colors.text
     }
 });
 
-export default AlbumView;
+export default AlbumSearchView;

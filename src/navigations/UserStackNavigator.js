@@ -12,7 +12,7 @@ import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
 
 const UserStack = createStackNavigator();
 
-export default function UserStackNavigator() {
+function UserStackNavigator() {
     return (
         <UserStack.Navigator
             screenOptions={{
@@ -30,3 +30,4 @@ export default function UserStackNavigator() {
     );
 }
 
+export default UserStackNavigator;

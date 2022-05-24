@@ -6,13 +6,9 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
-import { addUser, signUpFirebase } from '../backend/firebase'
-
-import { useStateValue } from '../StateProvider'
+import { onSignUp } from '../backend/firebase'
 
 function SignUpScreen({ navigation }) {
-    const [state, dispatch] = useStateValue();
-
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -20,6 +16,8 @@ function SignUpScreen({ navigation }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [error, setError] = useState('');
 
     return (
         <View style={styles.screen}>
@@ -59,6 +57,24 @@ function SignUpScreen({ navigation }) {
                     onChangeText={(password) => setPassword(password)}
                 />
 
+                {error == "SIGN_UP_USERNAME" ?
+                    (
+                        <View style={styles.textContainer}>
+                            <Text style={styles.errorText}>Username is already taken.</Text>
+                        </View>
+                    ) : (
+                        <View></View>
+                    )
+                }
+                {error == "SIGN_UP_EMAIL" ?
+                    (
+                        <View style={styles.textContainer}>
+                            <Text style={styles.errorText}>Email is already used.</Text>
+                        </View>
+                    ) : (
+                        <View></View>
+                    )
+                }
                 <WideButton
                     text='Sign Up'
                     onPress={async () => {
@@ -68,12 +84,8 @@ function SignUpScreen({ navigation }) {
                             username: username,
                             name: name
                         }
-                        await signUpFirebase(data);
-                        await addUser(data);
-                        dispatch({
-                            type: 'setUserData',
-                            payload: { username: username }
-                        })
+                        let e = await onSignUp(data);
+                        setError(e);
                     }}
                 />
 
@@ -110,6 +122,11 @@ const createStyle = (colors) => StyleSheet.create({
         fontWeight: 'bold',
         color: colors.link,
         marginTop: 10,
+    },
+    errorText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: "#ff3322",
     },
     textContainer: {
         alignItems: 'center'

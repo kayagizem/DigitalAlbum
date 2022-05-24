@@ -10,9 +10,16 @@ const ImageView = (props) => {
     return (
         <View style={props.style}>
             <View style={styles.ImageViewContainer}>
-                <Image style={styles.albumImage}
-                    source={{ uri: props.imageURI }}>
-                </Image>
+                {props.imageURI != ""
+                    ? (
+                        <Image style={styles.albumImage}
+                            source={{ uri: props.imageURI }}>
+                        </Image>
+                    ) : (
+                        <View style={styles.albumImage}>
+                        </View>
+                    )
+                }
                 <View style={styles.commentContainer}>
                     <Text style={styles.authorUsername}
                         onPress={() => props.nav.navigate('Profile', { username: props.username })} >{props.username}</Text>

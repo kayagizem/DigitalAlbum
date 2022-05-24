@@ -10,7 +10,7 @@ import PostCreationScreen from '../screens/PostCreationScreen';
 
 const HomeStack = createStackNavigator();
 
-export default function HomeStackNavigator() {
+function HomeStackNavigator() {
     return (
         <HomeStack.Navigator
             screenOptions={{
@@ -26,4 +26,6 @@ export default function HomeStackNavigator() {
         </HomeStack.Navigator>
     );
 }
+
+export default HomeStackNavigator;
 

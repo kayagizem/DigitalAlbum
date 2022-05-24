@@ -12,7 +12,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 const SettingsStack = createStackNavigator();
 
-export default function SettingsStackNavigator() {
+function SettingsStackNavigator() {
     return (
         <SettingsStack.Navigator
             screenOptions={{
@@ -29,3 +29,5 @@ export default function SettingsStackNavigator() {
         </SettingsStack.Navigator>
     );
 }
+
+export default SettingsStackNavigator;

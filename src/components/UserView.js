@@ -3,7 +3,7 @@ import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
-const FollowerView = (props) => {
+const UserView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
@@ -11,9 +11,16 @@ const FollowerView = (props) => {
         <View style={props.style}>
             <Pressable onPress={() => props.nav.navigate('Profile', { username: props.username })} >
                 <View style={styles.followerContainer}>
-                    <Image style={styles.profilePicture}
-                        source={{ uri: props.profilePictureURI }}>
-                    </Image>
+                    {props.profilePictureURI != ""
+                        ? (
+                            <Image style={styles.profilePicture}
+                                source={{ uri: props.profilePictureURI }}>
+                            </Image>
+                        ) : (
+                            <View style={styles.profilePicture}>
+                            </View>
+                        )
+                    }
                     <Text style={styles.username}>{props.username}</Text>
                 </View>
             </Pressable>
@@ -24,9 +31,9 @@ const FollowerView = (props) => {
 const createStyle = (colors) => StyleSheet.create({
     followerContainer: {
         padding: 10,
-        backgroundColor: colors.card,
         alignItems: 'center',
         flexDirection: 'row',
+        backgroundColor: colors.card
     },
     profilePicture: {
         width: 50,
@@ -35,10 +42,10 @@ const createStyle = (colors) => StyleSheet.create({
     },
     username: {
         fontSize: 14,
-        color: colors.text,
         fontWeight: 'bold',
-        marginLeft: 15
+        marginLeft: 15,
+        color: colors.text
     }
 });
 
-export default FollowerView;
+export default UserView;

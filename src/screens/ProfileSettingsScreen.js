@@ -17,7 +17,7 @@ function ProfileSettingsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [imageURI, setImageURI] = useState('');
+    const [imageURI, setImageURI] = useState(null);
     const [bio, setBio] = useState(state.userData.biography);
 
     const pickImage = async () => {
@@ -44,7 +44,7 @@ function ProfileSettingsScreen({ navigation }) {
                     showsVerticalScrollIndicator={false}>
                     <View style={styles.settingsBlock}>
                         <Text style={styles.settingsTitle}>Profile Picture</Text>
-                        {imageURI != ''
+                        {imageURI
                             ? <Image source={{ uri: imageURI }} style={styles.profilePictureBlock} />
                             : <View style={styles.profilePictureBlock} />
                         }
@@ -59,7 +59,11 @@ function ProfileSettingsScreen({ navigation }) {
                                         username: state.userData.username,
                                         imageURI: imageURI
                                     }
-                                    setProfilePicture(data)
+                                    setProfilePicture(data);
+                                    dispatch({
+                                        type: 'reloadState',
+                                        payload: !state.reload
+                                    });
                                 }}>
                                 <Text style={styles.profileButtonText}>Set Profile Picture</Text>
                             </Pressable>
@@ -83,6 +87,10 @@ function ProfileSettingsScreen({ navigation }) {
                                         biography: bio
                                     }
                                     setBiography(data);
+                                    dispatch({
+                                        type: 'reloadState',
+                                        payload: !state.reload
+                                    });
                                 }}>
                                 <Text style={styles.profileButtonText}>Set Biography</Text>
                             </Pressable>

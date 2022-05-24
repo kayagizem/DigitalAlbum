@@ -21,24 +21,51 @@ LogBox.ignoreLogs(['Setting a timer',
 
 export default function App() {
   const initialState = {
-    userData: {}
+    theme: defaultTheme,
+    userData: {},
+    userOwnedAlbums: [],
+    userContributedAlbums: [],
+    userFollowedAlbums: [],
+    reload: false,
   };
 
   const reducer = (state, action) => {
     switch (action.type) {
 
+      case 'setTheme':
+        return {
+          ...state,
+          theme: action.payload
+        }
       case 'setUserData':
         return {
           ...state,
           userData: action.payload
         }
-
+      case 'setUserOwnedAlbums':
+        return {
+          ...state,
+          userOwnedAlbums: action.payload
+        }
+      case 'setUserContributedAlbums':
+        return {
+          ...state,
+          userContributedAlbums: action.payload
+        }
+      case 'setUserFollowedAlbums':
+        return {
+          ...state,
+          userFollowedAlbums: action.payload
+        }
+      case 'reloadState':
+        return {
+          ...state,
+          reload: action.payload
+        }
       default:
         return state;
     }
   };
-
-  const theme = setTheme(2);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -53,6 +80,7 @@ export default function App() {
       setLoading(false);
     }
   });
+
   if (loading) {
     return (
       <View><Text>Loading Screen </Text></View>
@@ -62,9 +90,9 @@ export default function App() {
     <StateProvider initialState={initialState} reducer={reducer}>
       {loggedIn
         ? (
-          <MainNavigation theme={theme} />
+          <MainNavigation theme={initialState.theme} />
         ) : (
-          <NavigationContainer theme={theme}>
+          <NavigationContainer theme={initialState.theme}>
             <Stack.Navigator
               screenOptions={{
                 headerShown: false,
@@ -79,16 +107,3 @@ export default function App() {
     </StateProvider>
   );
 }
-
-export const setTheme = (themeCode) => {
-  let theme = defaultTheme;
-  switch (themeCode) {
-    case 1:
-      theme = darkTheme;
-      break;
-    case 2:
-      theme = greenTheme;
-      break;
-  }
-  return theme;
-};

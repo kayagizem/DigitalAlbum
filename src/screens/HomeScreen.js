@@ -5,6 +5,11 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 import { useStateValue } from '../StateProvider';
+import AlbumHomeView from '../components/AlbumHomeView';
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 function HomeScreen({ navigation }) {
     const { colors } = useTheme();
@@ -12,9 +17,43 @@ function HomeScreen({ navigation }) {
 
     const [state, dispatch] = useStateValue();
 
+    const [refreshing, setRefreshing] = useState(true);
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        wait(1000).then(() => setRefreshing(false));
+    }, []);
+
+    useEffect(async () => {
+        setRefreshing(false);
+    }, []);
+
+    const renderItems = ({ item }) => {
+        console.log(item)
+        return (
+            <AlbumHomeView
+                albumId={item}
+                nav={navigation} />
+        )
+    };
+
+    if (refreshing) {
+        return <View></View>
+    }
     return (
         <View style={styles.screen}>
             <HeaderBar title="Home"
+            />
+            <FlatList
+                data={state.userFollowedAlbums}
+                renderItem={renderItems}
+                keyExtractor={item => item}
+                refreshControl={
+                    < RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             />
         </View >
     );

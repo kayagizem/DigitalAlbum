@@ -17,7 +17,7 @@ import {
     setDoc,
     getDocs,
     Timestamp,
-    snapshotEqual,
+    deleteDoc,
 } from 'firebase/firestore';
 
 import { getStorage, uploadBytes, ref, getDownloadURL } from 'firebase/storage';
@@ -38,14 +38,25 @@ const app = initializeApp(firebaseConfig);
 // Authentication Part
 const auth = getAuth();
 
-export function signUpFirebase(data) {
-    createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-        })
-        .catch((error) => {
-            const errorCode = errorCode;
-            const errorMessage = error.message;
+/* First, checks if the username is already being used.
+*  Then, checks if the email is already being used.
+*  If they are not, adds the authentication and the user.
+*/
+export async function onSignUp(data) {
+    let isValid = await getDataFromWhere("users", "username", data.username) == null;
+    if (!isValid) {
+        console.log("Username is being used")
+        return "SIGN_UP_USERNAME";
+    }
+    isValid = await getDataFromWhere("users", "email", data.email) == null;
+    if (!isValid) {
+        console.log("Email is being used")
+        return "SIGN_UP_EMAIL";
+    }
+
+    await createUserWithEmailAndPassword(auth, data.email, data.password)
+        .then(async () => {
+            await addUser(data);
         });
 }
 
@@ -68,31 +79,12 @@ export function onSignOut() {
     });
 }
 
-const db = getFirestore(app);
-
 //  *****************************
 //   DATABASE PART
 //  *****************************
-
-/*
-Do not delete until you are comfortable with firebase.
-
-export async function getUserDataByUsername(username) {
-    const docRef = doc(db, "users", username);
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists()) {
-        console.log("No such document");
-    }
-
-    const docSnapData = docSnap.data();
-    return docSnapData;
-}
-*/
+const db = getFirestore(app);
 
 // Users
-
-// POST USER
 export async function addUser(data) {
     await addDoc(collection(db, "users"), {
         username: data.username,
@@ -113,7 +105,7 @@ export async function setProfilePicture(data) {
     const resp = await fetch(data.imageURI);
     const blob = await resp.blob();
 
-    const randomAddress = Math.floor(100000 + Math.random() * 900000);
+    const randomAddress = "profile";
     const path = 'images/' + data.username + '/' + randomAddress + '.jpg';
 
     const storageRef = ref(storage, path);
@@ -124,6 +116,7 @@ export async function setProfilePicture(data) {
             .then((url) => {
                 setDoc(doc(db, "users", userId), {
                     profilePictureURI: url,
+                    dateUpdated: Timestamp.now()
                 }, {
                     merge: true,
                 });
@@ -136,12 +129,12 @@ export async function setBiography(data) {
     let userId = await getIdFromWhere("users", "username", data.username)
     await setDoc(doc(db, "users", userId), {
         biography: data.biography,
+        dateUpdated: Timestamp.now()
     }, {
         merge: true,
     });
 }
 
-// GET USER
 export async function getUserDataByUsername(username) {
     return getDataFromWhere("users", "username", username);
 }
@@ -151,8 +144,6 @@ export async function getUserDataByEmail(email) {
 }
 
 // Albums
-
-// POST ALBUM
 export async function createAlbum(data) {
     const isValid = await getDataFromWhere("albums", "albumId", data.albumId) == null;
     console.log(isValid);
@@ -167,6 +158,39 @@ export async function createAlbum(data) {
     await addContributor(data);
     await addFollower(data);
     return true;
+}
+
+export async function followAlbum(data) {
+    addFollower(data);
+}
+
+export async function contributeAlbum(data) {
+    addContributor(data);
+    addFollower(data);
+}
+
+export async function unfollow(data) {
+    const q = query(collection(db, "followers"), where("username", "==", data.username));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async (document) => {
+        if (document.data().albumId == data.albumId) {
+            await deleteDoc(doc(db, "followers", document.id));
+        }
+    });
+}
+
+export async function uncontribute(data) {
+    const q = query(collection(db, "contributors"), where("username", "==", data.username));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async (document) => {
+        if (document.data().albumId == data.albumId) {
+            await deleteDoc(doc(db, "contributors", document.id));
+        }
+    });
 }
 
 export async function addAlbum(data) {

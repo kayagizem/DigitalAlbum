@@ -10,53 +10,64 @@ import { Ionicons } from '@expo/vector-icons';
 import UserStackNavigator from './UserStackNavigator';
 import SearchStackNavigator from './SearchStackNavigator';
 
+import SettingsStackNavigator from './SettingsStackNavigator';
+import HomeStackNavigator from './HomeStackNavigator';
 import { useStateValue } from '../StateProvider';
 
 import { getAuth } from 'firebase/auth';
 
-import { getUserDataByEmail, getUserDataByUsername } from '../backend/firebase';
-import SettingsStackNavigator from './SettingsStackNavigator';
-import HomeStackNavigator from './HomeStackNavigator';
+import { getUserDataByEmail, getOwnedAlbums, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
 
 const Tab = createBottomTabNavigator();
 
 function MainNavigation({ theme }) {
     const [state, dispatch] = useStateValue();
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchUser();
-    }, []);
+    useEffect(async () => {
+        await fetchUserAsync().then((userData) => {
+            fetchAlbumsLists(userData.username);
+        })
+    }, [state.reload]);
 
-    function fetchUser() {
-        fetchUserAsync();
-    }
     const fetchUserAsync = async () => {
-        let userData = {};
-        if (state.username != null) {
-            userData = await getUserDataByUsername(state.username);
-        } else {
-            const email = getAuth().currentUser.email;
-            userData = await getUserDataByEmail(email);
-        }
+        let userData = await getUserDataByEmail(getAuth().currentUser.email);
         dispatch({
             type: 'setUserData',
             payload: userData
         });
-        setLoading(false);
+        return userData;
     }
 
-    if (loading) {
-        return (
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Text>LOADING</Text>
-            </View>
-        );
+    const fetchAlbumsLists = (username) => {
+        fetchAlbumListsAsync(username);
     }
+
+    const fetchAlbumListsAsync = async (username) => {
+        let owned = await getOwnedAlbums(username);
+        dispatch({
+            type: 'setUserOwnedAlbums',
+            payload: owned.map((albumData) => albumData.albumId)
+        });
+        await getContributedAlbums(username)
+            .then((albumList) => {
+                dispatch({
+                    type: 'setUserContributedAlbums',
+                    payload: albumList.map((albumData) => albumData.albumId)
+                });
+            });
+        await getFollowedAlbums(username)
+            .then((albumList) => {
+                dispatch({
+                    type: 'setUserFollowedAlbums',
+                    payload: albumList.map((albumData) => albumData.albumId)
+                });
+            });
+    }
+
     return (
         <NavigationContainer theme={theme}>
             <Tab.Navigator
-                initialRouteName="User Stack"
+                initialRouteName="Home Stack"
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let icon;

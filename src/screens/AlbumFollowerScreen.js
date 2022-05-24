@@ -2,9 +2,9 @@ import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 
 import HeaderBar from '../components/HeaderBar';
-import FollowerView from '../components/FollowerView';
 
 import { useTheme } from '@react-navigation/native';
+import UserView from '../components/UserView';
 
 const testData = [
     {
@@ -98,7 +98,7 @@ function AlbumFollowerScreen({ navigation }) {
     const styles = createStyle(colors);
 
     const renderItem = ({ item }) => (
-        <FollowerView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
+        <UserView style={{ marginVertical: 4 }} username={item.username} image={item.image} nav={navigation} />
     );
 
     return (

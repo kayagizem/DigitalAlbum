@@ -17,7 +17,7 @@ function PostCreationScreen({ route, navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [imageURI, setImageURI] = useState('');
+    const [imageURI, setImageURI] = useState(null);
     const [caption, setCaption] = useState('');
 
     const pickImage = async () => {
@@ -41,7 +41,7 @@ function PostCreationScreen({ route, navigation }) {
 
             <View style={styles.content}>
 
-                {imageURI != ''
+                {imageURI
                     ? <Image source={{ uri: imageURI }} style={{ width: 200, height: 200, marginVertical: 25 }} />
                     : <View />
                 }
