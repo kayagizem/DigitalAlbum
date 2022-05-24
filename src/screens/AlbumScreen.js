@@ -7,7 +7,7 @@ import GeneralButton from '../components/GeneralButton';
 
 import { useStateValue } from '../StateProvider';
 
-import { followAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase'
+import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase'
 
 function AlbumScreen({ route, navigation }) {
     const [state, dispatch] = useStateValue();

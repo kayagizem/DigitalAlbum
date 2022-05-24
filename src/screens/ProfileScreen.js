@@ -1,50 +1,86 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Pressable, RefreshControl } from 'react-native';
 
 import AlbumView from '../components/AlbumView';
 import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
-import { getOwnedAlbums, getAlbumData, getUserDataByUsername } from '../backend/firebase';
+import { getOwnedAlbums, getAlbumData, getUserDataByUsername, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
 
 function ProfileScreen({ route, navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
     const [userData, setUserData] = useState({});
+
+    const [albums, setAlbums] = useState([]);
     const [ownedAlbums, setOwnedAlbums] = useState([]);
+    const [contributedAlbums, setContributedAlbums] = useState([]);
+    const [followedAlbums, setFollowedAlbums] = useState([]);
+
+    const [albumsIndex, setAlbumsIndex] = useState(0);
 
     const [refreshing, setRefreshing] = useState(true);
 
     const onRefresh = React.useCallback(async () => {
         setRefreshing(true);
-        await fetchUserAsync().then(setRefreshing(false));
+        await fetchUserAsync()
+            .then(() => {
+                switch (albumsIndex) {
+                    case 1:
+                        setAlbums(contributedAlbums);
+                        break;
+                    case 2:
+                        setAlbums(followedAlbums);
+                        break;
+                    default:
+                        setAlbums(ownedAlbums);
+                        break;
+                }
+            })
+            .finally(() => { setRefreshing(false) });
     }, []);
 
     useEffect(async () => {
         setRefreshing(true);
-        await fetchUserAsync().then(setRefreshing(false));
-    }, []);
+        await fetchUserAsync()
+            .then(() => {
+                switch (albumsIndex) {
+                    case 1:
+                        setAlbums(contributedAlbums);
+                        break;
+                    case 2:
+                        setAlbums(followedAlbums);
+                        break;
+                    default:
+                        setAlbums(ownedAlbums);
+                        break;
+                }
+            })
+            .finally(() => { setRefreshing(false); });
+    }, [albumsIndex]);
 
     const fetchUserAsync = async () => {
         await getUserDataByUsername(route.params.username)
             .then(async (userData) => {
                 setUserData(userData)
-                let ownedAlbumData = [];
-                await getOwnedAlbums(userData.username)
-                    .then(async (ownedAlbums) => {
-                        for (let i = 0; i < ownedAlbums.length; i++) {
-                            await getAlbumData(ownedAlbums[i].albumId)
-                                .then((data) => {
-                                    ownedAlbumData.push(data);
-                                });
-                        }
-                    })
-                    .finally(() => {
-                        ownedAlbumData = ownedAlbumData.sort((a, b) => b.dateCreated - a.dateCreated)
-                        setOwnedAlbums(ownedAlbumData);
-                    });
+                fetchUserAlbumsAsync(route.params.username);
+            });
+    }
+
+    const fetchUserAlbumsAsync = async (username) => {
+        await getOwnedAlbums(username)
+            .then((albumList) => {
+                setOwnedAlbums(albumList);
+            });
+        await getContributedAlbums(username)
+            .then((albumList) => {
+                setContributedAlbums(albumList);
+            });
+        await getFollowedAlbums(username)
+            .then((albumList) => {
+                setFollowedAlbums(albumList);
             });
     }
 
@@ -54,7 +90,64 @@ function ProfileScreen({ route, navigation }) {
     );
 
     if (refreshing) {
-        return (<View></View>)
+        return (
+            <View style={styles.screen}>
+                <HeaderBar title=""
+                    isId
+                    leftButtonText="Create"
+                    onPressLeft={() => navigation.navigate("Album Creation")}
+                    rightButtonText="Settings"
+                    onPressRight={() => {
+                        navigation.navigate("Profile Settings");
+                    }}
+                />
+                <FlatList
+                    ListHeaderComponent={
+                        < View style={styles.profileBlock} >
+                            <View style={styles.profileContainer}>
+                                <View style={styles.profilePicture} />
+                                <View style={styles.profileButtonContainer}>
+                                    <Pressable style={[styles.profileButton,
+                                    {
+                                        borderTopLeftRadius: 45,
+                                        borderBottomLeftRadius: 45,
+                                        backgroundColor: (albumsIndex == 1) ? colors.button : colors.primary
+                                    }]}>
+                                        <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Albums</Text>
+                                    </Pressable>
+                                    <Pressable style={[styles.profileButton,
+                                    {
+                                        borderTopRightRadius: 45,
+                                        borderBottomRightRadius: 45,
+                                        backgroundColor: (albumsIndex == 2) ? colors.button : colors.primary
+                                    }]}>
+                                        <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Follows</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                            <Text style={[styles.profileName, { color: colors.text, }]}>
+
+                            </Text>
+                            <Text style={[styles.profileBio, { color: colors.text, }]} numberOfLines={4}>
+
+                            </Text>
+                        </View >
+                    }
+                    style={{ marginBottom: 5 }}
+                    numColumns={3}
+                    showsVerticalScrollIndicator={false}
+                    data={[]}
+                    renderItem={renderAlbums}
+                    keyExtractor={item => item.albumId}
+                    refreshControl={
+                        < RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                />
+            </View >
+        );
     }
     return (
         <View style={styles.screen}>
@@ -71,20 +164,40 @@ function ProfileScreen({ route, navigation }) {
                                 source={{ uri: userData.profilePictureURI }}>
                             </Image>
                             <View style={styles.profileButtonContainer}>
-                                <View style={[styles.profileButton,
-                                {
-                                    borderTopLeftRadius: 45,
-                                    borderBottomLeftRadius: 45
-                                }]}>
-                                    <Text style={styles.profileButtonText}>Albums</Text>
-                                </View>
-                                <View style={[styles.profileButton,
-                                {
-                                    borderTopRightRadius: 45,
-                                    borderBottomRightRadius: 45
-                                }]}>
-                                    <Text style={styles.profileButtonText}>Follows</Text>
-                                </View>
+                                <Pressable
+                                    style={[styles.profileButton,
+                                    {
+                                        borderTopLeftRadius: 45,
+                                        borderBottomLeftRadius: 45,
+                                        backgroundColor: (albumsIndex == 1) ? colors.button : colors.primary
+                                    }]}
+                                    onPress={() => {
+                                        if (albumsIndex == 1) {
+                                            setAlbumsIndex(0);
+                                        }
+                                        else {
+                                            setAlbumsIndex(1);
+                                        }
+                                    }}>
+                                    <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Albums</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.profileButton,
+                                    {
+                                        borderTopRightRadius: 45,
+                                        borderBottomRightRadius: 45,
+                                        backgroundColor: (albumsIndex == 2) ? colors.button : colors.primary
+                                    }]}
+                                    onPress={() => {
+                                        if (albumsIndex == 2) {
+                                            setAlbumsIndex(0);
+                                        }
+                                        else {
+                                            setAlbumsIndex(2);
+                                        }
+                                    }}>
+                                    <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Follows</Text>
+                                </Pressable>
                             </View>
                         </View>
                         <Text style={styles.profileName}>{userData.name}</Text>
@@ -95,7 +208,7 @@ function ProfileScreen({ route, navigation }) {
                 style={{ marginBottom: 5 }}
                 numColumns={3}
                 showsVerticalScrollIndicator={false}
-                data={ownedAlbums}
+                data={albums}
                 renderItem={renderAlbums}
                 keyExtractor={item => item.albumId}
                 refreshControl={

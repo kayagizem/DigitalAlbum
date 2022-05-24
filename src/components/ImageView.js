@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native';
 
 const ImageView = (props) => {
@@ -10,6 +10,11 @@ const ImageView = (props) => {
     return (
         <View style={props.style}>
             <View style={styles.ImageViewContainer}>
+                <View style={styles.commentContainer}>
+                    <Text style={styles.authorUsername}
+                        onPress={() => props.nav.navigate('Profile', { username: props.username })} >{props.username}</Text>
+                    <Text style={styles.comment}>{props.caption}</Text>
+                </View>
                 {props.imageURI != ""
                     ? (
                         <Image style={styles.albumImage}
@@ -20,10 +25,17 @@ const ImageView = (props) => {
                         </View>
                     )
                 }
-                <View style={styles.commentContainer}>
-                    <Text style={styles.authorUsername}
-                        onPress={() => props.nav.navigate('Profile', { username: props.username })} >{props.username}</Text>
-                    <Text style={styles.comment}>{props.caption}</Text>
+                <View style={styles.likeContainer}>
+                    <Pressable
+                        onPress={() => { }}
+                    >
+                        <Ionicons style={{ marginRight: 8 }} name="heart-outline" size={32} color="black" />
+                    </Pressable>
+                    <Pressable
+                        onPress={() => { }}
+                    >
+                        <Ionicons style={{ marginRight: 8 }} name="chatbox-outline" size={32} color="black" />
+                    </Pressable>
                 </View>
             </View>
         </View >
@@ -34,27 +46,32 @@ const createStyle = (colors) => StyleSheet.create({
     ImageViewContainer: {
         backgroundColor: colors.card,
         alignItems: 'center',
-        paddingBottom: 10,
     },
     albumImage: {
         width: '100%',
         aspectRatio: 1,
     },
+    likeContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+    },
     commentContainer: {
         flexDirection: 'row',
         width: '100%',
-        marginTop: 10,
+        marginVertical: 10,
         alignItems: 'center',
-        paddingHorizontal: 10
+        paddingHorizontal: 12
     },
     authorUsername: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.text,
         fontWeight: 'bold',
         alignSelf: 'flex-start',
     },
     comment: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.text,
         marginLeft: 10
     }
