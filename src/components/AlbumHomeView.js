@@ -28,7 +28,6 @@ const AlbumHomeView = (props) => {
             <Image style={styles.albumImage} source={{ uri: item.imageURI }} />
         </View>
     );
-    console.log("sadas: " + props.albumId)
     return (
         <View style={styles.albumContainer}>
             <FlatList

@@ -29,7 +29,6 @@ function HomeScreen({ navigation }) {
     }, []);
 
     const renderItems = ({ item }) => {
-        console.log(item)
         return (
             <AlbumHomeView
                 albumId={item}

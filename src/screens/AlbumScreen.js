@@ -17,31 +17,34 @@ function AlbumScreen({ route, navigation }) {
 
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = React.useCallback(async () => {
-        setRefreshing(true);
-        await fetchAlbumAsync().then(setRefreshing(false));
+    const onRefresh = React.useCallback(() => {
+        const refreshAlbum = async () => {
+            let albumData = await getAlbumData(route.params.albumId);
+            setAlbumData(albumData);
+            let posts = await getPosts(route.params.albumId);
+            posts = posts.sort((a, b) => b.dateCreated - a.dateCreated);
+            setPosts(posts);
+        }
+
+        refreshAlbum().catch(() => { });
     }, []);
 
-    useEffect(async () => {
-        setRefreshing(true);
-        await fetchAlbumAsync().then(setRefreshing(false));
-    }, []);
+    useEffect(() => {
+        const fetchAlbum = async () => {
+            setRefreshing(true);
+            let albumData = await getAlbumData(route.params.albumId);
+            setAlbumData(albumData);
+            let posts = await getPosts(route.params.albumId);
+            posts = posts.sort((a, b) => b.dateCreated - a.dateCreated);
+            setPosts(posts);
+            setRefreshing(false);
+        }
 
-    const fetchAlbumAsync = async () => {
-        await getAlbumData(route.params.albumId)
-            .then(async (albumData) => {
-                setAlbumData(albumData);
-            });
-        await getPosts(route.params.albumId)
-            .then((posts) => {
-                posts = posts.sort((a, b) => b.dateCreated - a.dateCreated)
-                setPosts(posts);
-            });
-    }
+        fetchAlbum().catch(() => { });
+    }, []);
 
     const drawButton = () => {
         if (state.userOwnedAlbums.includes(route.params.albumId)) {
-            console.log("own")
             return (
                 <GeneralButton
                     disabled
@@ -49,7 +52,6 @@ function AlbumScreen({ route, navigation }) {
                 />
             );
         } else if (state.userContributedAlbums.includes(route.params.albumId)) {
-            console.log("contributed")
             return (
                 <GeneralButton
                     text="Leave"
@@ -67,7 +69,6 @@ function AlbumScreen({ route, navigation }) {
                 />
             );
         } else if (state.userFollowedAlbums.includes(route.params.albumId)) {
-            console.log("followed")
             return (
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                     <GeneralButton
@@ -101,7 +102,6 @@ function AlbumScreen({ route, navigation }) {
                 </View>
             );
         } else {
-            console.log("nothing")
             return (
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                     <GeneralButton
@@ -139,10 +139,9 @@ function AlbumScreen({ route, navigation }) {
     }
 
     const renderImages = ({ item }) => (
-        <ImageView style={{ flex: 1 / 3, margin: 1 }} imageURI={item.imageURI} username={item.username} caption={item.caption} nav={navigation} />
+        <ImageView style={{ flex: 1 / 3, margin: 1 }} imageURI={item.imageURI} username={item.username} caption={item.caption} nav={navigation} albumId={albumData.albumId} postId={item.postId} />
     );
 
-    drawButton();
     if (refreshing) {
         return (<View></View>)
     }

@@ -23,13 +23,15 @@ const Tab = createBottomTabNavigator();
 function MainNavigation({ theme }) {
     const [state, dispatch] = useStateValue();
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(async () => {
-        await fetchUserAsync().then((userData) => {
-            fetchAlbumsLists(userData.username);
-        })
+        let userData = await fetchUser()
+        await fetchAlbumLists(userData.username);
+        setLoading(false);
     }, [state.reload]);
 
-    const fetchUserAsync = async () => {
+    const fetchUser = async () => {
         let userData = await getUserDataByEmail(getAuth().currentUser.email);
         dispatch({
             type: 'setUserData',
@@ -38,32 +40,29 @@ function MainNavigation({ theme }) {
         return userData;
     }
 
-    const fetchAlbumsLists = (username) => {
-        fetchAlbumListsAsync(username);
-    }
-
-    const fetchAlbumListsAsync = async (username) => {
+    const fetchAlbumLists = async (username) => {
         let owned = await getOwnedAlbums(username);
         dispatch({
             type: 'setUserOwnedAlbums',
             payload: owned.map((albumData) => albumData.albumId)
         });
-        await getContributedAlbums(username)
-            .then((albumList) => {
-                dispatch({
-                    type: 'setUserContributedAlbums',
-                    payload: albumList.map((albumData) => albumData.albumId)
-                });
-            });
-        await getFollowedAlbums(username)
-            .then((albumList) => {
-                dispatch({
-                    type: 'setUserFollowedAlbums',
-                    payload: albumList.map((albumData) => albumData.albumId)
-                });
-            });
+        let contributed = await getContributedAlbums(username);
+        dispatch({
+            type: 'setUserContributedAlbums',
+            payload: contributed.map((albumData) => albumData.albumId)
+        });
+        let followed = await getFollowedAlbums(username);
+        dispatch({
+            type: 'setUserFollowedAlbums',
+            payload: followed.map((albumData) => albumData.albumId)
+        });
     }
 
+    if (loading) {
+        return (
+            <View></View>
+        );
+    }
     return (
         <NavigationContainer theme={theme}>
             <Tab.Navigator
