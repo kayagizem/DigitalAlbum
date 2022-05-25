@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native';
+
 import { useStateValue } from '../StateProvider';
 
 import { addLike, isLiked, removeLike } from '../backend/firebase';
@@ -9,6 +10,7 @@ import { addLike, isLiked, removeLike } from '../backend/firebase';
 const ImageView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
+    const [liked, setLiked] = useState(false);
 
     const [state, dispatch] = useStateValue();
 

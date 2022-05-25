@@ -97,6 +97,25 @@ export async function addUser(data) {
     });
 }
 
+export async function addComment(data) {
+    await addDoc(collection(db, "comments"), {
+        username: data.username,
+        postId: data.postId,
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now(),
+        comment: data.comment
+    });
+}
+
+export async function addLikes(data) {
+    await addDoc(collection(db, "likes"), {
+        username: data.username,
+        postId: data.postId,
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now()
+    });
+}
+
 export async function setProfilePicture(data) {
     const metadata = {
         contentType: 'image/jpeg'
