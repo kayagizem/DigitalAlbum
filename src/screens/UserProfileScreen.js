@@ -8,10 +8,6 @@ import { useStateValue } from '../StateProvider';
 
 import { getAlbumData } from '../backend/firebase';
 
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 function UserProfileScreen({ navigation }) {
     const [state, dispatch] = useStateValue();
 
@@ -20,40 +16,55 @@ function UserProfileScreen({ navigation }) {
 
     const [refreshing, setRefreshing] = useState(true);
 
-    const onRefresh = React.useCallback(async () => {
-        setRefreshing(true);
-        wait(1000).then(() => setRefreshing(false));
+    const onRefresh = React.useCallback(() => {
+        const refreshUser = async () => {
+            let albumsData = [];
+            switch (albumsIndex) {
+                case 1:
+                    albumsData = await fetchAlbumsAsync(state.userContributedAlbums);
+                    break;
+                case 2:
+                    albumsData = await fetchAlbumsAsync(state.userFollowedAlbums);
+                    break;
+                default:
+                    albumsData = await fetchAlbumsAsync(state.userOwnedAlbums);
+                    break;
+            }
+            setAlbums(albumsData);
+        }
+        refreshUser().catch(() => { });
     }, []);
 
-    useEffect(async () => {
-        switch (albumsIndex) {
-            case 1:
-                fetchAlbums(state.userContributedAlbums);
-                break;
-            case 2:
-                fetchAlbums(state.userFollowedAlbums);
-                break;
-            default:
-                fetchAlbums(state.userOwnedAlbums);
-                break;
+    useEffect(() => {
+        const fetchUser = async () => {
+            setRefreshing(true);
+            let albumsData = [];
+            switch (albumsIndex) {
+                case 1:
+                    albumsData = await fetchAlbumsAsync(state.userContributedAlbums);
+                    break;
+                case 2:
+                    albumsData = await fetchAlbumsAsync(state.userFollowedAlbums);
+                    break;
+                default:
+                    albumsData = await fetchAlbumsAsync(state.userOwnedAlbums);
+                    break;
+            }
+            setAlbums(albumsData);
+            setRefreshing(false);
         }
-        setRefreshing(false);
-    }, [state, albumsIndex]);
 
-    const fetchAlbums = (albumList) => {
-        fetchAlbumsAsync(albumList)
-    }
+        fetchUser().catch(() => { });
+    }, [state.reload, albumsIndex]);
 
     const fetchAlbumsAsync = async (albumList) => {
         let albumData = [];
         for (let i = 0; i < albumList.length; i++) {
-            await getAlbumData(albumList[i])
-                .then((data) => {
-                    albumData.push(data);
-                });
+            let data = await getAlbumData(albumList[i]);
+            albumData.push(data);
         }
-        albumData = albumData.sort((a, b) => b.dateCreated - a.dateCreated)
-        setAlbums(albumData);
+        albumData = albumData.sort((a, b) => b.dateCreated - a.dateCreated);
+        return albumData;
     }
 
     const renderAlbums = ({ item }) => (

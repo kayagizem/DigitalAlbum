@@ -15,75 +15,67 @@ function ProfileScreen({ route, navigation }) {
     const [userData, setUserData] = useState({});
 
     const [albums, setAlbums] = useState([]);
-    const [ownedAlbums, setOwnedAlbums] = useState([]);
-    const [contributedAlbums, setContributedAlbums] = useState([]);
-    const [followedAlbums, setFollowedAlbums] = useState([]);
 
     const [albumsIndex, setAlbumsIndex] = useState(0);
 
     const [refreshing, setRefreshing] = useState(true);
 
-    const onRefresh = React.useCallback(async () => {
-        setRefreshing(true);
-        await fetchUserAsync()
-            .then(() => {
-                switch (albumsIndex) {
-                    case 1:
-                        setAlbums(contributedAlbums);
-                        break;
-                    case 2:
-                        setAlbums(followedAlbums);
-                        break;
-                    default:
-                        setAlbums(ownedAlbums);
-                        break;
-                }
-            })
-            .finally(() => { setRefreshing(false) });
+    const onRefresh = React.useCallback(() => {
+        const refreshUser = async () => {
+            let userData = await fetchUserAsync();
+            setUserData(userData);
+            let albumList = await fetchUserAlbumsAsync(userData.username);
+            albumList = albumList.map((album) => album.albumId);
+            let listData = await fetchAlbumsAsync(albumList);
+            setAlbums(listData);
+            setAlbums(albumData);
+        }
+
+        refreshUser().catch(() => { });
     }, []);
 
     useEffect(async () => {
-        setRefreshing(true);
-        await fetchUserAsync()
-            .then(() => {
-                switch (albumsIndex) {
-                    case 1:
-                        setAlbums(contributedAlbums);
-                        break;
-                    case 2:
-                        setAlbums(followedAlbums);
-                        break;
-                    default:
-                        setAlbums(ownedAlbums);
-                        break;
-                }
-            })
-            .finally(() => { setRefreshing(false); });
+        const fetchUser = async () => {
+            setRefreshing(true);
+            let userData = await fetchUserAsync();
+            setUserData(userData);
+            let albumList = await fetchUserAlbumsAsync(userData.username);
+            albumList = albumList.map((album) => album.albumId);
+            let listData = await fetchAlbumsAsync(albumList);
+            setAlbums(listData);
+            setRefreshing(false);
+        }
+        fetchUser().catch(() => { });
     }, [albumsIndex]);
 
     const fetchUserAsync = async () => {
-        await getUserDataByUsername(route.params.username)
-            .then(async (userData) => {
-                setUserData(userData)
-                fetchUserAlbumsAsync(route.params.username);
-            });
+        let userData = await getUserDataByUsername(route.params.username);
+        return userData;
     }
 
     const fetchUserAlbumsAsync = async (username) => {
-        await getOwnedAlbums(username)
-            .then((albumList) => {
-                setOwnedAlbums(albumList);
-            });
-        await getContributedAlbums(username)
-            .then((albumList) => {
-                setContributedAlbums(albumList);
-            });
-        await getFollowedAlbums(username)
-            .then((albumList) => {
-                setFollowedAlbums(albumList);
-            });
+        switch (albumsIndex) {
+            case 1:
+                let followed = await getFollowedAlbums(username);
+                return followed;
+            case 2:
+                let contributed = await getContributedAlbums(username);
+                return contributed;
+            default:
+                let owned = await getOwnedAlbums(username);
+                return owned;
+        }
     }
 
+    const fetchAlbumsAsync = async (albumList) => {
+        let albumData = [];
+        for (let i = 0; i < albumList.length; i++) {
+            let data = await getAlbumData(albumList[i]);
+            albumData.push(data);
+        }
+        albumData = albumData.sort((a, b) => b.dateCreated - a.dateCreated);
+        return albumData;
+    }
 
     const renderAlbums = ({ item }) => (
         <AlbumView style={{ flex: 1 / 3, margin: 1 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} />

@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native';
-import { useState } from "react";
 
+import { useStateValue } from '../StateProvider';
+
+import { addLike, isLiked, removeLike } from '../backend/firebase';
 
 const ImageView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
     const [liked, setLiked] = useState(false);
+
+    const [state, dispatch] = useStateValue();
+
+    const [liked, setLiked] = useState(false);
+
+    useEffect(async () => {
+        let liked = await isLiked(state.userData.username, props.postId);
+        console.log(liked);
+        setLiked(liked);
+    }, []);
 
     return (
         <View style={props.style}>
@@ -30,23 +42,26 @@ const ImageView = (props) => {
                 }
                 <View style={styles.likeContainer}>
                     <Pressable
-                        onPress={() => { 
-                            //let data = {
-                            //    albumId: route.params.albumId,
-                            //    username: state.userData.username,
-                            //    postId: route.params.postId
-                            //}
-                            //addLikes(data);
-                            setLiked((isLiked) => !isLiked)
-                            //dispatch({
-                            //    type: 'reloadState',
-                            //    payload: !state.reload
-                            //});
+                        onPress={() => {
+                            if (liked) {
+                                removeLike(state.userData.username, props.postId);
+                                setLiked(false);
+                            }
+                            else {
+                                let data = {
+                                    albumId: props.albumId,
+                                    username: state.userData.username,
+                                    postId: props.postId
+                                }
+                                addLike(data);
+                                setLiked(true);
+                            }
                         }}
                     >
-                      <Ionicons
-                            style={{ marginRight: 8 }} name={liked ? "heart" : "heart-outline"} size={32} color={liked ? "red" : "black"}
-                          />
+                        {liked
+                            ? <Ionicons style={{ marginRight: 8 }} name="heart" size={32} color="red" />
+                            : <Ionicons style={{ marginRight: 8 }} name="heart-outline" size={32} color="black" />
+                        }
                     </Pressable>
                     <Pressable
                         onPress={() => { }}

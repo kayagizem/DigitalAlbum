@@ -359,7 +359,7 @@ export async function postImage(data) {
     const resp = await fetch(data.imageURI);
     const blob = await resp.blob();
 
-    const randomAddress = Math.floor(100000 + Math.random() * 900000);
+    const randomAddress = Math.floor(1000000000000000 + Math.random() * 9000000000000000);
     const path = 'images/' + data.username + '/' + randomAddress + '.jpg';
 
     const storageRef = ref(storage, path);
@@ -369,11 +369,13 @@ export async function postImage(data) {
         getDownloadURL(storageRef)
             .then(async (url) => {
                 const postData = {
+                    postId: data.username + "/" + randomAddress,
                     albumId: data.albumId,
                     username: data.username,
                     caption: data.caption,
                     imageURI: url
                 }
+                console.log(postData)
                 addPost(postData);
 
                 let albumId = await getIdFromWhere("albums", "albumId", data.albumId)
@@ -389,6 +391,7 @@ export async function postImage(data) {
 
 export async function addPost(data) {
     await addData("posts", {
+        postId: data.postId,
         albumId: data.albumId,
         username: data.username,
         caption: data.caption,
@@ -400,4 +403,34 @@ export async function addPost(data) {
 
 export async function getPosts(albumId) {
     return getAllDataFromWhere("posts", "albumId", albumId);
+}
+
+
+// Like Comment 
+export async function isLiked(username, postId) {
+    let userLikes = await getAllDataFromWhere("likes", "username", username);
+    console.log(userLikes.map((like) => like.postId));
+    return userLikes.map((like) => like.postId).includes(postId);
+}
+
+export async function addLike(data) {
+    await addData("likes", {
+        albumId: data.albumId,
+        username: data.username,
+        postId: data.postId,
+        dateCreated: Timestamp.now()
+    });
+}
+
+export async function removeLike(username, postId) {
+    const q = query(collection(db, "likes"), where("username", "==", username));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async (document) => {
+        if (document.data().postId == postId) {
+            await deleteDoc(doc(db, "likes", document.id));
+            console.log("removed")
+        }
+    });
 }
