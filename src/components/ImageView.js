@@ -2,10 +2,13 @@ import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native';
+import { useState } from "react";
+
 
 const ImageView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
+    const [liked, setLiked] = useState(false);
 
     return (
         <View style={props.style}>
@@ -27,9 +30,23 @@ const ImageView = (props) => {
                 }
                 <View style={styles.likeContainer}>
                     <Pressable
-                        onPress={() => { }}
+                        onPress={() => { 
+                            //let data = {
+                            //    albumId: route.params.albumId,
+                            //    username: state.userData.username,
+                            //    postId: route.params.postId
+                            //}
+                            //addLikes(data);
+                            setLiked((isLiked) => !isLiked)
+                            //dispatch({
+                            //    type: 'reloadState',
+                            //    payload: !state.reload
+                            //});
+                        }}
                     >
-                        <Ionicons style={{ marginRight: 8 }} name="heart-outline" size={32} color="black" />
+                      <Ionicons
+                            style={{ marginRight: 8 }} name={liked ? "heart" : "heart-outline"} size={32} color={liked ? "red" : "black"}
+                          />
                     </Pressable>
                     <Pressable
                         onPress={() => { }}
