@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, FlatList, RefreshControl,StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native';
 
 import { useStateValue } from '../StateProvider';
 
 import { addLike, isLiked, removeLike } from '../backend/firebase';
+
+
+import HeaderBar from '../components/HeaderBar';
+
+import GeneralButton from '../components/GeneralButton';
+
+
+import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase';
 
 const PostView = (props) => {
     const { colors } = useTheme();
@@ -15,12 +23,15 @@ const PostView = (props) => {
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(props.likeCount);
     const [commentCount, setCommentCount] = useState(0);
+   // const albumIdd = state.alb
 
     useEffect(async () => {
         let liked = await isLiked(state.userData.username, props.postId);
+        //let albumId = await getIdFromWhere("albums", "albumId", data.albumId);
         setLiked(liked);
     }, []);
-
+    
+    console.log("this " + props.albumId);
     return (
         <View style={props.style}>
             <View style={styles.ImageViewContainer}>
@@ -29,14 +40,15 @@ const PostView = (props) => {
                         onPress={() => props.nav.navigate('Profile', { username: props.username })} >{props.username}</Text>
                     <Text style={styles.comment}>{props.caption}</Text>
                 </View>
-                {props.imageURI != ""
+                
+                {props.imageURI != "" && (state.userContributedAlbums.includes(props.albumId) || state.userOwnedAlbums.includes(props.albumId))
                     ? (
                         <Image style={styles.albumImage}
                             source={{ uri: props.imageURI }}>
                         </Image>
                     ) : (
-                        <View style={styles.albumImage}>
-                        </View>
+                        <Image style={styles.albumImage}>
+                        </Image>
                     )
                 }
                 <View style={styles.likeContainer}>
@@ -125,6 +137,12 @@ const createStyle = (colors) => StyleSheet.create({
         fontSize: 14,
         color: colors.text,
         marginLeft: 10
+    },
+    albumId: {
+        fontSize: 12,
+        color: colors.text,
+        fontWeight: 'bold',
+        margin: 4
     }
 });
 

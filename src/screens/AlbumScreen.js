@@ -7,7 +7,7 @@ import GeneralButton from '../components/GeneralButton';
 
 import { useStateValue } from '../StateProvider';
 
-import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase';
+import { followAlbum, contributeAlbum, getAlbumData, getPosts, makeAlbumPrivate, uncontribute, unfollow } from '../backend/firebase';
 
 function AlbumScreen({ route, navigation }) {
     const [state, dispatch] = useStateValue();
@@ -16,7 +16,7 @@ function AlbumScreen({ route, navigation }) {
     const [posts, setPosts] = useState([]);
 
     const [refreshing, setRefreshing] = useState(false);
-
+    
     const onRefresh = React.useCallback(() => {
         const refreshAlbum = async () => {
             let albumData = await getAlbumData(route.params.albumId);
@@ -46,10 +46,29 @@ function AlbumScreen({ route, navigation }) {
     const drawButton = () => {
         if (state.userOwnedAlbums.includes(route.params.albumId)) {
             return (
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                
                 <GeneralButton
                     disabled
                     text="Owning"
                 />
+                <GeneralButton
+                text="Make Private"
+                onPress={() => {
+                    let data = {
+                        albumId: route.params.albumId,
+                        username: state.userData.username
+                    }
+                    makeAlbumPrivate(data);
+                    console.log("privateButton")
+                    dispatch({
+                        type: 'reloadState',
+                        payload: !state.reload
+                    });
+                }}
+
+        />
+        </View>
             );
         }
         return (
@@ -127,6 +146,7 @@ function AlbumScreen({ route, navigation }) {
         <PostView style={{ flex: 1 / 3, margin: 1 }}
             imageURI={item.imageURI}
             username={item.username}
+            albumId={route.params.albumId}
             caption={item.caption}
             postId={item.postId}
             likeCount={item.likeCount}

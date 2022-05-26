@@ -6,6 +6,7 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from "firebase/auth";
+import { useState } from "react";
 
 import {
     getFirestore,
@@ -168,6 +169,9 @@ export async function followAlbum(data) {
 export async function contributeAlbum(data) {
     addContributor(data);
 }
+export async function makeAlbumPrivate(data) {
+    makePrivate(data)
+}
 
 export async function unfollow(data) {
     const q = query(collection(db, "followers"), where("username", "==", data.username));
@@ -226,7 +230,9 @@ export async function addFollower(data) {
         dateCreated: Timestamp.now()
     });
 }
-
+export async function makePrivate(data) {
+    
+}
 // Username: String -> Album List: []
 export async function getOwnedAlbums(username) {
     return getAllDataFromWhere("owners", "username", username);
