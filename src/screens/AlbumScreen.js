@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import HeaderBar from '../components/HeaderBar';
-import ImageView from '../components/ImageView';
+import PostView from '../components/PostView';
 import GeneralButton from '../components/GeneralButton';
 
 import { useStateValue } from '../StateProvider';
 
-import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase'
+import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow } from '../backend/firebase';
 
 function AlbumScreen({ route, navigation }) {
     const [state, dispatch] = useStateValue();
@@ -51,27 +51,26 @@ function AlbumScreen({ route, navigation }) {
                     text="Owning"
                 />
             );
-        } else if (state.userContributedAlbums.includes(route.params.albumId)) {
-            return (
-                <GeneralButton
-                    text="Leave"
-                    onPress={() => {
-                        let data = {
-                            albumId: route.params.albumId,
-                            username: state.userData.username
-                        }
-                        uncontribute(data);
-                        dispatch({
-                            type: 'reloadState',
-                            payload: !state.reload
-                        });
-                    }}
-                />
-            );
-        } else if (state.userFollowedAlbums.includes(route.params.albumId)) {
-            return (
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+        }
+        return (
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                {state.userContributedAlbums.includes(route.params.albumId) ? (
                     <GeneralButton
+                        text="Leave"
+                        onPress={() => {
+                            let data = {
+                                albumId: route.params.albumId,
+                                username: state.userData.username
+                            }
+                            uncontribute(data);
+                            dispatch({
+                                type: 'reloadState',
+                                payload: !state.reload
+                            });
+                        }}
+                    />
+                ) : (
+                    < GeneralButton
                         text="Join"
                         onPress={() => {
                             let data = {
@@ -84,7 +83,11 @@ function AlbumScreen({ route, navigation }) {
                                 payload: !state.reload
                             });
                         }}
+
                     />
+                )
+                }
+                {state.userFollowedAlbums.includes(route.params.albumId) ? (
                     <GeneralButton
                         text="Unfollow"
                         onPress={() => {
@@ -99,26 +102,7 @@ function AlbumScreen({ route, navigation }) {
                             });
                         }}
                     />
-                </View>
-            );
-        } else {
-            return (
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                    <GeneralButton
-                        text="Join"
-                        onPress={() => {
-                            let data = {
-                                albumId: route.params.albumId,
-                                username: state.userData.username
-                            }
-                            contributeAlbum(data);
-                            dispatch({
-                                type: 'reloadState',
-                                payload: !state.reload
-                            });
-                        }}
-
-                    />
+                ) : (
                     <GeneralButton
                         text="Follow"
                         onPress={() => {
@@ -133,13 +117,21 @@ function AlbumScreen({ route, navigation }) {
                             });
                         }}
                     />
-                </View>
-            );
-        }
+                )
+                }
+            </View>
+        );
     }
 
     const renderImages = ({ item }) => (
-        <ImageView style={{ flex: 1 / 3, margin: 1 }} imageURI={item.imageURI} username={item.username} caption={item.caption} nav={navigation} albumId={albumData.albumId} postId={item.postId} />
+        <PostView style={{ flex: 1 / 3, margin: 1 }}
+            imageURI={item.imageURI}
+            username={item.username}
+            caption={item.caption}
+            postId={item.postId}
+            likeCount={item.likeCount}
+            nav={navigation}
+        />
     );
 
     if (refreshing) {
@@ -191,7 +183,7 @@ function AlbumScreen({ route, navigation }) {
                 renderItem={renderImages}
                 keyExtractor={item => item.imageURI}
                 refreshControl={
-                    <RefreshControl
+                    < RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
                     />

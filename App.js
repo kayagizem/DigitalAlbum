@@ -90,7 +90,7 @@ export default function App() {
     <StateProvider initialState={initialState} reducer={reducer}>
       {loggedIn
         ? (
-          <MainNavigation theme={initialState.theme} />
+          <MainNavigation />
         ) : (
           <NavigationContainer theme={initialState.theme}>
             <Stack.Navigator

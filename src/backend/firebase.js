@@ -18,6 +18,7 @@ import {
     getDocs,
     Timestamp,
     deleteDoc,
+    getDoc,
 } from 'firebase/firestore';
 
 import { getStorage, uploadBytes, ref, getDownloadURL } from 'firebase/storage';
@@ -97,25 +98,6 @@ export async function addUser(data) {
     });
 }
 
-export async function addComment(data) {
-    await addDoc(collection(db, "comments"), {
-        username: data.username,
-        postId: data.postId,
-        dateCreated: Timestamp.now(),
-        dateUpdated: Timestamp.now(),
-        comment: data.comment
-    });
-}
-
-export async function addLikes(data) {
-    await addDoc(collection(db, "likes"), {
-        username: data.username,
-        postId: data.postId,
-        dateCreated: Timestamp.now(),
-        dateUpdated: Timestamp.now()
-    });
-}
-
 export async function setProfilePicture(data) {
     const metadata = {
         contentType: 'image/jpeg'
@@ -185,7 +167,6 @@ export async function followAlbum(data) {
 
 export async function contributeAlbum(data) {
     addContributor(data);
-    addFollower(data);
 }
 
 export async function unfollow(data) {
@@ -390,12 +371,15 @@ export async function postImage(data) {
 }
 
 export async function addPost(data) {
-    await addData("posts", {
-        postId: data.postId,
+    const docRef = doc(collection(db, "posts"));
+
+    await setDoc(docRef, {
+        postId: docRef.id,
         albumId: data.albumId,
         username: data.username,
         caption: data.caption,
         imageURI: data.imageURI,
+        likeCount: 0,
         dateCreated: Timestamp.now(),
         dateUpdated: Timestamp.now()
     });
@@ -415,10 +399,18 @@ export async function isLiked(username, postId) {
 
 export async function addLike(data) {
     await addData("likes", {
-        albumId: data.albumId,
         username: data.username,
         postId: data.postId,
         dateCreated: Timestamp.now()
+    });
+
+    const docRef = doc(db, "posts", data.postId);
+    const docSnap = await getDoc(docRef);
+
+    await setDoc(docRef, {
+        likeCount: docSnap.data().likeCount + 1,
+    }, {
+        merge: true
     });
 }
 
@@ -430,7 +422,26 @@ export async function removeLike(username, postId) {
     querySnapshot.forEach(async (document) => {
         if (document.data().postId == postId) {
             await deleteDoc(doc(db, "likes", document.id));
-            console.log("removed")
+
+            const docRef = doc(db, "posts", postId);
+            const docSnap = await getDoc(docRef);
+
+            await setDoc(docRef, {
+                likeCount: docSnap.data().likeCount - 1,
+            }, {
+                merge: true
+            });
         }
+    });
+}
+
+
+export async function addComment(data) {
+    await addData("comments", {
+        postId: data.postId,
+        username: data.username,
+        comment: data.comment,
+        dateCreated: Timestamp.now(),
+        dateUpdated: Timestamp.now(),
     });
 }
