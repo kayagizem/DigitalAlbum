@@ -21,7 +21,7 @@ import { getUserDataByEmail, getOwnedAlbums, getContributedAlbums, getFollowedAl
 
 const Tab = createBottomTabNavigator();
 
-function MainNavigation({ theme }) {
+function MainNavigation() {
     const [state, dispatch] = useStateValue();
 
     const [loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ function MainNavigation({ theme }) {
         );
     }
     return (
-        <NavigationContainer theme={theme}>
+        <NavigationContainer theme={state.theme}>
             <Tab.Navigator
                 initialRouteName="Home Stack"
                 screenOptions={({ route }) => ({

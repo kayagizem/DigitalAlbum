@@ -15,7 +15,6 @@ function ProfileScreen({ route, navigation }) {
     const [userData, setUserData] = useState({});
 
     const [albums, setAlbums] = useState([]);
-
     const [albumsIndex, setAlbumsIndex] = useState(0);
 
     const [refreshing, setRefreshing] = useState(true);
@@ -52,6 +51,7 @@ function ProfileScreen({ route, navigation }) {
         return userData;
     }
 
+    console.log(albums);
     const fetchUserAlbumsAsync = async (username) => {
         switch (albumsIndex) {
             case 1:
@@ -102,7 +102,7 @@ function ProfileScreen({ route, navigation }) {
                                     {
                                         borderTopLeftRadius: 45,
                                         borderBottomLeftRadius: 45,
-                                        backgroundColor: (albumsIndex == 1) ? colors.button : colors.primary
+                                        backgroundColor: (albumsIndex == 1) ? colors.buttonPressed : colors.button
                                     }]}>
                                         <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Albums</Text>
                                     </Pressable>
@@ -110,7 +110,7 @@ function ProfileScreen({ route, navigation }) {
                                     {
                                         borderTopRightRadius: 45,
                                         borderBottomRightRadius: 45,
-                                        backgroundColor: (albumsIndex == 2) ? colors.button : colors.primary
+                                        backgroundColor: (albumsIndex == 2) ? colors.buttonPressed : colors.button
                                     }]}>
                                         <Text style={[styles.profileButtonText, { color: colors.buttonText }]}>Follows</Text>
                                     </Pressable>
@@ -151,16 +151,23 @@ function ProfileScreen({ route, navigation }) {
                 ListHeaderComponent={
                     <View style={styles.profileBlock}>
                         <View style={styles.profileContainer}>
-                            <Image style={styles.profilePicture}
-                                source={{ uri: userData.profilePictureURI }}>
-                            </Image>
+                            {userData.profilePictureURI != ""
+                                ? (
+                                    <Image style={styles.profilePicture}
+                                        source={{ uri: userData.profilePictureURI }}>
+                                    </Image>
+
+                                ) : (
+                                    <View style={styles.profilePicture} />
+                                )
+                            }
                             <View style={styles.profileButtonContainer}>
                                 <Pressable
                                     style={[styles.profileButton,
                                     {
                                         borderTopLeftRadius: 45,
                                         borderBottomLeftRadius: 45,
-                                        backgroundColor: (albumsIndex == 1) ? colors.button : colors.primary
+                                        backgroundColor: (albumsIndex == 1) ? colors.buttonPressed : colors.button
                                     }]}
                                     onPress={() => {
                                         if (albumsIndex == 1) {
@@ -177,7 +184,7 @@ function ProfileScreen({ route, navigation }) {
                                     {
                                         borderTopRightRadius: 45,
                                         borderBottomRightRadius: 45,
-                                        backgroundColor: (albumsIndex == 2) ? colors.button : colors.primary
+                                        backgroundColor: (albumsIndex == 2) ? colors.buttonPressed : colors.button
                                     }]}
                                     onPress={() => {
                                         if (albumsIndex == 2) {

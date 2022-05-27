@@ -7,8 +7,8 @@ export const defaultTheme = {
         background: '#ffffff',
 
         card: '#f8f8f8',
-        button: '#5AA2B1',
-        buttonPressed: '#69CCE2',
+        button: '#073D48',
+        buttonPressed: '#5AA2B1',
 
         followButton: '#5AA2B1',
         followButtonPressed: '#69CCE2',
@@ -21,30 +21,38 @@ export const defaultTheme = {
 
         input: '#efefef',
         border: '#cfcfcf',
-        placeholder: '#9f9f9f'
+        placeholder: '#9f9f9f',
+
+        likeBar: '#000000'
     }
 }
 
 export const darkTheme = {
     dark: true,
     colors: {
-        primary: '#3a636b',
-        secondary: '#073D48',
+        primary: '#508994',
+        secondary: '#0F8096',
 
-        background: '#1A1A1A',
+        background: '#111111',
 
-        card: '#1D1D1D',
-        button: '#457882',
+        card: '#1F1F1F',
+        button: '#5D919C',
         buttonPressed: '#5AA2B1',
 
-        text: '#5AA2B1',
+        followButton: '#5AA2B1',
+        followButtonPressed: '#69CCE2',
+        followButtonText: '#ffffff',
+
+        text: '#FAFAFA',
         buttonText: '#EFEFEF',
         headerText: '#EFEFEF',
         link: '#5AA2B1',
 
         input: '#3D3D3D',
-        border: '#EFEFEF',
-        placeholder: '#EFEFEF'
+        border: '#AFAFAF',
+        placeholder: '#EFEFEF',
+
+        likeBar: '#FFFFFF'
     }
 }
 
@@ -71,6 +79,8 @@ export const greenTheme = {
 
         input: '#efefef',
         border: '#cfcfcf',
-        placeholder: '#9f9f9f'
+        placeholder: '#9f9f9f',
+
+        likeBar: '#000000'
     }
 }

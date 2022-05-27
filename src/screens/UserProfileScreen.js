@@ -17,13 +17,10 @@ function UserProfileScreen({ navigation }) {
     const [refreshing, setRefreshing] = useState(true);
 
     const onRefresh = React.useCallback(() => {
-        const refreshUser = async () => {
-            dispatch({
-                type: 'reloadState',
-                payload: state.reload
-            });
-        }
-        refreshUser().catch(() => { });
+        dispatch({
+            type: 'reloadState',
+            payload: !state.reload
+        });
     }, []);
 
     useEffect(() => {
@@ -65,7 +62,7 @@ function UserProfileScreen({ navigation }) {
     if (refreshing) {
         return (
             <View style={[styles.screen, { backgroundColor: state.theme.colors.background, }]}>
-                <HeaderBar title=""
+                <HeaderBar title={state.userData.username}
                     isId
                     leftButtonText="Create"
                     onPressLeft={() => navigation.navigate("Album Creation")}
@@ -78,31 +75,55 @@ function UserProfileScreen({ navigation }) {
                     ListHeaderComponent={
                         < View style={[styles.profileBlock, { borderColor: state.theme.colors.primary }]} >
                             <View style={styles.profileContainer}>
-                                <View style={[styles.profilePicture, { borderColor: state.theme.colors.border, }]} />
+                                {state.userData.profilePictureURI != "" ?
+                                    (
+                                        <Image style={[styles.profilePicture, { borderColor: state.theme.colors.border, }]}
+                                            source={{ uri: state.userData.profilePictureURI }}>
+                                        </Image>
+                                    ) : (
+                                        <View style={[styles.profilePicture, { borderColor: state.theme.colors.border, }]} />
+                                    )}
                                 <View style={styles.profileButtonContainer}>
                                     <Pressable style={[styles.profileButton,
                                     {
                                         borderTopLeftRadius: 45,
                                         borderBottomLeftRadius: 45,
-                                        backgroundColor: (albumsIndex == 1) ? state.theme.colors.button : state.theme.colors.primary
-                                    }]}>
+                                        backgroundColor: (albumsIndex == 1) ? state.theme.colors.buttonPressed : state.theme.colors.button
+                                    }]}
+                                        onPress={() => {
+                                            if (albumsIndex == 1) {
+                                                setAlbumsIndex(0);
+                                            }
+                                            else {
+                                                setAlbumsIndex(1);
+                                            }
+                                        }}>
                                         <Text style={[styles.profileButtonText, { color: state.theme.colors.buttonText }]}>Albums</Text>
                                     </Pressable>
                                     <Pressable style={[styles.profileButton,
                                     {
                                         borderTopRightRadius: 45,
                                         borderBottomRightRadius: 45,
-                                        backgroundColor: (albumsIndex == 2) ? state.theme.colors.button : state.theme.colors.primary
-                                    }]}>
+                                        backgroundColor: (albumsIndex == 2) ? state.theme.colors.buttonPressed : state.theme.colors.button
+                                    }]}
+                                        onPress={() => {
+                                            if (albumsIndex == 2) {
+                                                setAlbumsIndex(0);
+                                            }
+                                            else {
+                                                setAlbumsIndex(2);
+                                            }
+                                        }}
+                                    >
                                         <Text style={[styles.profileButtonText, { color: state.theme.colors.buttonText }]}>Follows</Text>
                                     </Pressable>
                                 </View>
                             </View>
                             <Text style={[styles.profileName, { color: state.theme.colors.text, }]}>
-
+                                {state.userData.name}
                             </Text>
                             <Text style={[styles.profileBio, { color: state.theme.colors.text, }]} numberOfLines={4}>
-
+                                {state.userData.biography}
                             </Text>
                         </View >
                     }
@@ -151,7 +172,7 @@ function UserProfileScreen({ navigation }) {
                                     {
                                         borderTopLeftRadius: 45,
                                         borderBottomLeftRadius: 45,
-                                        backgroundColor: (albumsIndex == 1) ? state.theme.colors.button : state.theme.colors.primary
+                                        backgroundColor: (albumsIndex == 1) ? state.theme.colors.buttonPressed : state.theme.colors.button
                                     }]}
                                     onPress={() => {
                                         if (albumsIndex == 1) {
@@ -168,7 +189,7 @@ function UserProfileScreen({ navigation }) {
                                     {
                                         borderTopRightRadius: 45,
                                         borderBottomRightRadius: 45,
-                                        backgroundColor: (albumsIndex == 2) ? state.theme.colors.button : state.theme.colors.primary
+                                        backgroundColor: (albumsIndex == 2) ? state.theme.colors.buttonPressed : state.theme.colors.button
                                     }]}
                                     onPress={() => {
                                         if (albumsIndex == 2) {

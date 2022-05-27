@@ -41,7 +41,12 @@ function HomeScreen({ navigation }) {
     };
 
     if (refreshing) {
-        return <View></View>
+        return (
+            <View style={styles.screen}>
+                <HeaderBar title="Home"
+                />
+            </View >
+        );
     }
     return (
         <View style={styles.screen}>

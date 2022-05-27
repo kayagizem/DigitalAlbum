@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet, Text, ScrollView, Pressable } from 'react-native';
+import { View, Image, StyleSheet, Text, ScrollView, Pressable, TextInput } from 'react-native';
 
 import HeaderBar from '../components/HeaderBar';
 
@@ -9,7 +9,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { setBiography, setProfilePicture, onSignOut } from '../backend/firebase';
 
 import { useStateValue } from '../StateProvider'
-import { TextInput } from 'react-native-gesture-handler';
+
+import { defaultTheme, darkTheme, greenTheme } from '../Themes';
 
 function ProfileSettingsScreen({ navigation }) {
     const [state, dispatch] = useStateValue();
@@ -97,6 +98,55 @@ function ProfileSettingsScreen({ navigation }) {
                         </View>
                     </View>
                     <View style={styles.settingsBlock}>
+                        <Text style={styles.settingsTitle}>Theme</Text>
+
+                        <View style={styles.profileButtonContainer}>
+                            <Pressable style={styles.profileButton}
+                                onPress={() => {
+                                    dispatch({
+                                        type: 'setTheme',
+                                        payload: defaultTheme
+                                    });
+                                    dispatch({
+                                        type: 'reloadState',
+                                        payload: !state.reload
+                                    });
+                                }}>
+                                <Text style={styles.profileButtonText}>Default Theme</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.profileButtonContainer}>
+                            <Pressable style={styles.profileButton}
+                                onPress={() => {
+                                    dispatch({
+                                        type: 'setTheme',
+                                        payload: darkTheme
+                                    });
+                                    dispatch({
+                                        type: 'reloadState',
+                                        payload: !state.reload
+                                    });
+                                }}>
+                                <Text style={styles.profileButtonText}>Dark Theme</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.profileButtonContainer}>
+                            <Pressable style={styles.profileButton}
+                                onPress={() => {
+                                    dispatch({
+                                        type: 'setTheme',
+                                        payload: greenTheme
+                                    });
+                                    dispatch({
+                                        type: 'reloadState',
+                                        payload: !state.reload
+                                    });
+                                }}>
+                                <Text style={styles.profileButtonText}>Green Theme</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.settingsBlock}>
                         <View style={styles.profileButtonContainer}>
                             <Pressable style={styles.profileButton}
                                 onPress={() => {
@@ -122,6 +172,7 @@ const createStyle = (colors) => StyleSheet.create({
         paddingTop: 40,
         alignContent: 'center',
         backgroundColor: colors.background,
+        paddingBottom: 100
     },
     content: {
         paddingHorizontal: 20,
@@ -130,7 +181,8 @@ const createStyle = (colors) => StyleSheet.create({
     settingsTitle: {
         fontSize: 14,
         fontWeight: 'bold',
-        marginBottom: 2
+        marginBottom: 2,
+        color: colors.text
     },
     settingsInput: {
         marginVertical: 10,

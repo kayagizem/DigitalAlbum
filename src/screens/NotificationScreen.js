@@ -8,7 +8,7 @@ import { useStateValue } from '../StateProvider';
 
 import NotificationView from '../components/NotificationView';
 
-import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
+import { getNotifications } from '../backend/firebase';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -24,7 +24,11 @@ function NotificationScreen({ navigation }) {
 
     const onRefresh = React.useCallback(async () => {
         setRefreshing(true);
-        wait(1000).then(() => setRefreshing(false));
+        dispatch({
+            type: 'setNotifications',
+            payload: await getNotifications(state.userData.username)
+        });
+        setRefreshing(false);
     }, []);
 
     useEffect(async () => {

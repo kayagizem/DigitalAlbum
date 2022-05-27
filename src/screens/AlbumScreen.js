@@ -105,16 +105,7 @@ function AlbumScreen({ route, navigation }) {
                                     albumId: route.params.albumId,
                                     username: state.userData.username
                                 }
-                                if (albumData.albumType == 2) {
-                                    let data = {
-                                        from: state.userData.username,
-                                        albumId: route.params.albumId,
-                                        type: "follow"
-                                    };
-                                    await addNotification(data);
-                                } else {
-                                    await followAlbum(data);
-                                }
+                                await followAlbum(data);
                                 dispatch({
                                     type: 'reloadState',
                                     payload: !state.reload

@@ -16,6 +16,7 @@ import {
     addDoc,
     setDoc,
     getDocs,
+    getDoc,
     Timestamp,
     deleteDoc,
 } from 'firebase/firestore';
@@ -435,12 +436,15 @@ export async function postImage(data) {
 }
 
 export async function addPost(data) {
-    await addData("posts", {
-        postId: data.postId,
+    const docRef = doc(collection(db, "posts"));
+
+    await setDoc(docRef, {
+        postId: docRef.id,
         albumId: data.albumId,
         username: data.username,
         caption: data.caption,
         imageURI: data.imageURI,
+        likeCount: 0,
         dateCreated: Timestamp.now(),
         dateUpdated: Timestamp.now()
     });
@@ -493,10 +497,18 @@ export async function isLiked(username, postId) {
 
 export async function addLike(data) {
     await addData("likes", {
-        albumId: data.albumId,
         username: data.username,
         postId: data.postId,
         dateCreated: Timestamp.now()
+    });
+
+    const docRef = doc(db, "posts", data.postId);
+    const docSnap = await getDoc(docRef);
+
+    await setDoc(docRef, {
+        likeCount: docSnap.data().likeCount + 1,
+    }, {
+        merge: true
     });
 }
 
@@ -508,7 +520,15 @@ export async function removeLike(username, postId) {
     querySnapshot.forEach(async (document) => {
         if (document.data().postId == postId) {
             await deleteDoc(doc(db, "likes", document.id));
-            console.log("removed")
+
+            const docRef = doc(db, "posts", data.postId);
+            const docSnap = await getDoc(docRef);
+
+            await setDoc(docRef, {
+                likeCount: docSnap.data().likeCount - 1,
+            }, {
+                merge: true
+            });
         }
     });
 }
