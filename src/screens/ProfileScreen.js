@@ -6,7 +6,7 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 
-import { getOwnedAlbums, getAlbumData, getUserDataByUsername, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
+import { getAlbumData, getUserDataByUsername, getFollowedAlbumsDifferent, getContributedAlbumsDifferent, getOwnedAlbumsDifferent } from '../backend/firebase';
 
 function ProfileScreen({ route, navigation }) {
     const { colors } = useTheme();
@@ -40,7 +40,6 @@ function ProfileScreen({ route, navigation }) {
             let userData = await fetchUserAsync();
             setUserData(userData);
             let albumList = await fetchUserAlbumsAsync(userData.username);
-            albumList = albumList.map((album) => album.albumId);
             let listData = await fetchAlbumsAsync(albumList);
             setAlbums(listData);
             setRefreshing(false);
@@ -56,13 +55,13 @@ function ProfileScreen({ route, navigation }) {
     const fetchUserAlbumsAsync = async (username) => {
         switch (albumsIndex) {
             case 1:
-                let followed = await getFollowedAlbums(username);
+                let followed = await getFollowedAlbumsDifferent(username);
                 return followed;
             case 2:
-                let contributed = await getContributedAlbums(username);
+                let contributed = await getContributedAlbumsDifferent(username);
                 return contributed;
             default:
-                let owned = await getOwnedAlbums(username);
+                let owned = await getOwnedAlbumsDifferent(username);
                 return owned;
         }
     }

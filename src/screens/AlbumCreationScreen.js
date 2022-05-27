@@ -9,6 +9,8 @@ import { useTheme } from '@react-navigation/native';
 import { useStateValue } from '../StateProvider'
 import { createAlbum } from '../backend/firebase';
 
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
+
 function AlbumCreationScreen({ navigation }) {
     const [state, dispatch] = useStateValue();
 
@@ -17,6 +19,8 @@ function AlbumCreationScreen({ navigation }) {
 
     const [name, setName] = useState('');
     const [id, setId] = useState('');
+
+    const [albumType, setAlbumType] = useState(1);
 
     return (
         <View style={styles.screen}>
@@ -41,16 +45,57 @@ function AlbumCreationScreen({ navigation }) {
                     onChangeText={(id) => setId(id)}
                 />
 
+                <View style={styles.buttonContainer}>
+                    <Pressable
+                        style={styles.button}
+                        onPress={() => {
+                            setAlbumType(0);
+                        }}
+                    >
+                        <MaterialIcons name="public" size={36} color={albumType == 0 ? colors.primary : colors.secondary} />
+                    </Pressable>
+                    <Pressable
+                        style={styles.button}
+                        onPress={() => {
+                            setAlbumType(1);
+                        }}
+                    >
+                        <Feather name="users" size={36} color={albumType == 1 ? colors.primary : colors.secondary} />
+                    </Pressable>
+                    <Pressable
+                        style={styles.button}
+                        onPress={() => {
+                            setAlbumType(2);
+                        }}
+                    >
+                        <Ionicons name="lock-closed-outline" size={36} color={albumType == 2 ? colors.primary : colors.secondary} />
+                    </Pressable>
+                    <Pressable
+                        style={styles.button}
+                        onPress={() => {
+                            setAlbumType(3);
+                        }}
+                    >
+                        <Ionicons name="eye-off-outline" size={36} color={albumType == 3 ? colors.primary : colors.secondary} />
+                    </Pressable>
+
+                </View>
+
                 <WideButton
                     text='Create'
                     onPress={async () => {
                         const data = {
                             albumName: name,
+                            albumType: albumType, // 0: general, 1: public, 2: private, 3: secret
                             albumId: id,
                             username: state.userData.username
                         }
                         createAlbum(data);
-                        navigation.navigate("User Profile")
+                        dispatch({
+                            type: 'reloadState',
+                            payload: !state.reload
+                        });
+                        navigation.navigate("User Profile");
                     }} />
 
                 <View style={styles.textContainer}>
@@ -62,7 +107,7 @@ function AlbumCreationScreen({ navigation }) {
                     </Text>
                 </View>
             </View >
-        </View>
+        </View >
     );
 }
 
@@ -85,6 +130,16 @@ const createStyle = (colors) => StyleSheet.create({
     },
     textContainer: {
         alignItems: 'center'
+    },
+    buttonContainer: {
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
+    button: {
+        padding: 6,
+        borderRadius: 15,
     },
     input: {
         marginVertical: 10,

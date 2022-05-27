@@ -216,6 +216,7 @@ export async function addAlbum(data) {
     await addData("albums", {
         albumName: data.albumName,
         albumId: data.albumId,
+        albumType: data.albumType,
         albumCoverURI: '',
         dateCreated: Timestamp.now(),
         dateUpdated: Timestamp.now()
@@ -261,6 +262,48 @@ export async function getFollowedAlbums(username) {
     return getAllDataFromWhere("followers", "username", username);
 }
 
+// Username: String -> Album List: []
+export async function getOwnedAlbumsDifferent(username) {
+    let albums = await getAllDataFromWhere("owners", "username", username);
+
+    let a = [];
+    for (let i = 0; i < albums.length; i++) {
+        let data = await getAlbumData(albums[i].albumId);
+        if (data.albumType != 3) {
+            a.push(data.albumId);
+        }
+    }
+    return a;
+}
+
+// Username: String -> Album List: []
+export async function getContributedAlbumsDifferent(username) {
+    let albums = await getAllDataFromWhere("contributors", "username", username);
+
+    let a = [];
+    for (let i = 0; i < albums.length; i++) {
+        let data = await getAlbumData(albums[i].albumId);
+        if (data.albumType != 3) {
+            a.push(data.albumId);
+        }
+    }
+    return a;
+}
+
+// Username: String -> Album List: []
+export async function getFollowedAlbumsDifferent(username) {
+    let albums = await getAllDataFromWhere("followers", "username", username);
+
+    let a = [];
+    for (let i = 0; i < albums.length; i++) {
+        let data = await getAlbumData(albums[i].albumId);
+        if (data.albumType != 3) {
+            a.push(data.albumId);
+        }
+    }
+    return a;
+}
+
 // Album ID: String -> Album Data: {}
 export async function getAlbumData(albumId) {
     return getDataFromWhere("albums", "albumId", albumId);
@@ -291,7 +334,9 @@ export async function searchAlbums(str) {
 
     let data = [];
     querySnapshot.forEach((doc) => {
-        data.push(doc.data());
+        if (doc.data().albumType != 3) {
+            data.push(doc.data());
+        }
     });
 
     return data;
@@ -405,6 +450,39 @@ export async function getPosts(albumId) {
     return getAllDataFromWhere("posts", "albumId", albumId);
 }
 
+// Notifications
+export async function getNotifications(username) {
+    return getAllDataFromWhere("notifications", "to", username);
+}
+
+export async function addNotification(data) {
+    const notificationRef = doc(collection(db, "notifications"));
+
+    const ownerData = await getDataFromWhere("owners", "albumId", data.albumId);
+
+    console.log(ownerData)
+    console.log(data)
+    await setDoc(notificationRef, {
+        notificationId: notificationRef.id,
+        albumId: data.albumId,
+        from: data.from,
+        to: ownerData.username,
+        type: data.type,
+        dateCreated: Timestamp.now()
+    });
+}
+
+export async function deleteNotification(notificationId) {
+    const q = query(collection(db, "notifications"), where("notificationId", "==", notificationId));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async (document) => {
+        if (document.data().notificationId == notificationId) {
+            await deleteDoc(doc(db, "notifications", document.id));
+        }
+    });
+}
 
 // Like Comment 
 export async function isLiked(username, postId) {

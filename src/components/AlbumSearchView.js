@@ -3,6 +3,8 @@ import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
+import { Ionicons } from '@expo/vector-icons';
+
 const AlbumSearchView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
@@ -11,13 +13,14 @@ const AlbumSearchView = (props) => {
         <View style={props.style}>
             <Pressable onPress={() => props.nav.navigate('Album', { albumId: props.albumId })} >
                 <View style={styles.albumContainer}>
-                    {props.albumCoverURI != ""
+                    {(props.albumCoverURI != "")
                         ? (
                             <Image style={styles.albumCover}
                                 source={{ uri: props.albumCoverURI }}>
                             </Image>
                         ) : (
                             <View style={styles.albumCover}>
+                                <Ionicons name="lock-closed-outline" size={36} color={colors.secondary} />
                             </View>
                         )
                     }
@@ -39,6 +42,9 @@ const createStyle = (colors) => StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 45,
+        backgroundColor: colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     albumId: {
         fontSize: 14,

@@ -18,19 +18,10 @@ function UserProfileScreen({ navigation }) {
 
     const onRefresh = React.useCallback(() => {
         const refreshUser = async () => {
-            let albumsData = [];
-            switch (albumsIndex) {
-                case 1:
-                    albumsData = await fetchAlbumsAsync(state.userContributedAlbums);
-                    break;
-                case 2:
-                    albumsData = await fetchAlbumsAsync(state.userFollowedAlbums);
-                    break;
-                default:
-                    albumsData = await fetchAlbumsAsync(state.userOwnedAlbums);
-                    break;
-            }
-            setAlbums(albumsData);
+            dispatch({
+                type: 'reloadState',
+                payload: state.reload
+            });
         }
         refreshUser().catch(() => { });
     }, []);

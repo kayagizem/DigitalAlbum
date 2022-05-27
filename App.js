@@ -26,6 +26,7 @@ export default function App() {
     userOwnedAlbums: [],
     userContributedAlbums: [],
     userFollowedAlbums: [],
+    notifications: [],
     reload: false,
   };
 
@@ -56,6 +57,11 @@ export default function App() {
         return {
           ...state,
           userFollowedAlbums: action.payload
+        }
+      case 'setNotifications':
+        return {
+          ...state,
+          notifications: action.payload
         }
       case 'reloadState':
         return {

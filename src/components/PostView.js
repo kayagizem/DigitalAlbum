@@ -7,18 +7,17 @@ import { useStateValue } from '../StateProvider';
 
 import { addLike, isLiked, removeLike } from '../backend/firebase';
 
-const ImageView = (props) => {
+const PostView = (props) => {
     const { colors } = useTheme();
     const styles = createStyle(colors);
-    const [liked, setLiked] = useState(false);
 
     const [state, dispatch] = useStateValue();
-
     const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(props.likeCount);
+    const [commentCount, setCommentCount] = useState(0);
 
     useEffect(async () => {
         let liked = await isLiked(state.userData.username, props.postId);
-        console.log(liked);
         setLiked(liked);
     }, []);
 
@@ -41,33 +40,40 @@ const ImageView = (props) => {
                     )
                 }
                 <View style={styles.likeContainer}>
-                    <Pressable
-                        onPress={() => {
-                            if (liked) {
-                                removeLike(state.userData.username, props.postId);
-                                setLiked(false);
-                            }
-                            else {
-                                let data = {
-                                    albumId: props.albumId,
-                                    username: state.userData.username,
-                                    postId: props.postId
+                    <View style={styles.likeBoxLeft}>
+                        <Pressable
+                            onPress={() => {
+                                if (liked) {
+                                    removeLike(state.userData.username, props.postId);
+                                    setLiked(false);
+                                    setLikeCount(likeCount - 1);
                                 }
-                                addLike(data);
-                                setLiked(true);
+                                else {
+                                    let data = {
+                                        username: state.userData.username,
+                                        postId: props.postId
+                                    }
+                                    addLike(data);
+                                    setLiked(true);
+                                    setLikeCount(likeCount + 1);
+                                }
+                            }}
+                        >
+                            {liked
+                                ? <Ionicons style={{ marginRight: 12 }} name="heart" size={32} color="red" />
+                                : <Ionicons style={{ marginRight: 12 }} name="heart-outline" size={32} color={colors.likeBar} />
                             }
-                        }}
-                    >
-                        {liked
-                            ? <Ionicons style={{ marginRight: 8 }} name="heart" size={32} color="red" />
-                            : <Ionicons style={{ marginRight: 8 }} name="heart-outline" size={32} color="black" />
-                        }
-                    </Pressable>
-                    <Pressable
-                        onPress={() => { }}
-                    >
-                        <Ionicons style={{ marginRight: 8 }} name="chatbox-outline" size={32} color="black" />
-                    </Pressable>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => { }}
+                        >
+                            <Ionicons style={{ marginRight: 12 }} name="chatbox-outline" size={32} color={colors.likeBar} />
+                        </Pressable>
+                    </View>
+                    <View style={styles.likeBoxRight}>
+                        <Text style={{ marginRight: 8, color: colors.text }}>{likeCount} likes</Text>
+                        <Text style={{ marginRight: 8, color: colors.text }}>{commentCount} comments</Text>
+                    </View>
                 </View>
             </View>
         </View >
@@ -88,6 +94,19 @@ const createStyle = (colors) => StyleSheet.create({
         width: '100%',
         paddingVertical: 6,
         paddingHorizontal: 12,
+        alignItems: 'center'
+    },
+    likeBoxLeft: {
+        flex: 1,
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'flex-start'
+    },
+    likeBoxRight: {
+        flex: 1,
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'flex-end'
     },
     commentContainer: {
         flexDirection: 'row',
@@ -109,4 +128,4 @@ const createStyle = (colors) => StyleSheet.create({
     }
 });
 
-export default ImageView;
+export default PostView;

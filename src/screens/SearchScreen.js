@@ -21,7 +21,7 @@ function SearchScreen({ navigation }) {
     );
 
     const renderAlbums = ({ item }) => (
-        <AlbumSearchView style={{ marginVertical: 4 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} />
+        <AlbumSearchView style={{ marginVertical: 4 }} albumId={item.albumId} albumCoverURI={item.albumCoverURI} nav={navigation} albumType={item.albumType} />
     );
 
     return (

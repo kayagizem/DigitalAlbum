@@ -9,14 +9,15 @@ import { Ionicons } from '@expo/vector-icons';
 
 import UserStackNavigator from './UserStackNavigator';
 import SearchStackNavigator from './SearchStackNavigator';
-
 import SettingsStackNavigator from './SettingsStackNavigator';
 import HomeStackNavigator from './HomeStackNavigator';
+import NotificationStackNavigator from './NotificationStackNavigator';
+
 import { useStateValue } from '../StateProvider';
 
 import { getAuth } from 'firebase/auth';
 
-import { getUserDataByEmail, getOwnedAlbums, getContributedAlbums, getFollowedAlbums } from '../backend/firebase';
+import { getUserDataByEmail, getOwnedAlbums, getContributedAlbums, getFollowedAlbums, getNotifications } from '../backend/firebase';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,8 +27,9 @@ function MainNavigation({ theme }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(async () => {
-        let userData = await fetchUser()
+        let userData = await fetchUser();
         await fetchAlbumLists(userData.username);
+        await fetchNotifications(userData.username);
         setLoading(false);
     }, [state.reload]);
 
@@ -58,6 +60,14 @@ function MainNavigation({ theme }) {
         });
     }
 
+    const fetchNotifications = async (username) => {
+        let notifications = await getNotifications(username);
+        dispatch({
+            type: 'setNotifications',
+            payload: notifications
+        });
+    }
+    console.log(state)
     if (loading) {
         return (
             <View></View>
@@ -81,10 +91,10 @@ function MainNavigation({ theme }) {
                                 ? 'search'
                                 : 'search-outline';
                             icon = <Ionicons name={iconName} size={size} color={color} />;
-                        } else if (route.name === 'Settings Stack') {
+                        } else if (route.name === 'Notification Stack') {
                             let iconName = focused
-                                ? 'settings'
-                                : 'settings-outline';
+                                ? 'notifications'
+                                : 'notifications-outline';
                             icon = <Ionicons name={iconName} size={size} color={color} />;
                         } else if (route.name === 'Home Stack') {
                             let iconName = focused
@@ -101,8 +111,8 @@ function MainNavigation({ theme }) {
                 })}>
                 <Tab.Screen name="Home Stack" component={HomeStackNavigator} />
                 <Tab.Screen name="Search Stack" component={SearchStackNavigator} />
+                <Tab.Screen name="Notification Stack" component={NotificationStackNavigator} />
                 <Tab.Screen name="User Stack" component={UserStackNavigator} />
-                <Tab.Screen name="Settings Stack" component={SettingsStackNavigator} />
             </Tab.Navigator>
         </NavigationContainer >
     );
