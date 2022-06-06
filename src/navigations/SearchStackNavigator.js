@@ -8,7 +8,8 @@ import AlbumScreen from '../screens/AlbumScreen';
 import AlbumFollowerScreen from '../screens/AlbumFollowerScreen';
 import AlbumCreationScreen from '../screens/AlbumCreationScreen';
 import SearchScreen from '../screens/SearchScreen';
-
+import CommentScreen from '../screens/CommentScreen';
+import PostCreationScreen from '../screens/PostCreationScreen';
 
 const SearchStack = createStackNavigator();
 
@@ -25,6 +26,8 @@ function SearchStackNavigator() {
             <SearchStack.Screen name="Profile" component={ProfileScreen} />
             <SearchStack.Screen name="Album" component={AlbumScreen} />
             <SearchStack.Screen name="Album Follower" component={AlbumFollowerScreen} />
+            <SearchStack.Screen name="Comment" component={CommentScreen} />
+            <SearchStack.Screen name="Post Creation" component={PostCreationScreen} />
         </SearchStack.Navigator>
     );
 }

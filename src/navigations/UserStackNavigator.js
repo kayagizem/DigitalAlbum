@@ -9,6 +9,7 @@ import AlbumFollowerScreen from '../screens/AlbumFollowerScreen';
 import AlbumCreationScreen from '../screens/AlbumCreationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
 import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
+import CommentScreen from '../screens/CommentScreen';
 
 const UserStack = createStackNavigator();
 
@@ -26,6 +27,7 @@ function UserStackNavigator() {
             <UserStack.Screen name="Album" component={AlbumScreen} />
             <UserStack.Screen name="Album Follower" component={AlbumFollowerScreen} />
             <UserStack.Screen name="Post Creation" component={PostCreationScreen} />
+            <UserStack.Screen name="Comment" component={CommentScreen} />
         </UserStack.Navigator>
     );
 }

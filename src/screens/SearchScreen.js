@@ -28,6 +28,7 @@ function SearchScreen({ navigation }) {
         <View style={styles.screen}>
             <HeaderBar
                 title="Search"
+                isId
             />
 
             <View style={styles.content}>

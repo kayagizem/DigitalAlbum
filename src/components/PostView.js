@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 
 import { useStateValue } from '../StateProvider';
 
-import { addLike, isLiked, removeLike } from '../backend/firebase';
+import { addLike, getCommentCount, getLikeCount, isLiked, removeLike } from '../backend/firebase';
 
 const PostView = (props) => {
     const { colors } = useTheme();
@@ -18,7 +18,11 @@ const PostView = (props) => {
 
     useEffect(async () => {
         let liked = await isLiked(state.userData.username, props.postId);
+        let likeCount = await getLikeCount(props.postId);
+        let commentCount = await getCommentCount(props.postId);
         setLiked(liked);
+        setLikeCount(likeCount);
+        setCommentCount(commentCount);
     }, []);
 
     return (
@@ -65,7 +69,11 @@ const PostView = (props) => {
                             }
                         </Pressable>
                         <Pressable
-                            onPress={() => { }}
+                            onPress={() => {
+                                props.nav.navigate("Comment", {
+                                    postId: props.postId
+                                });
+                            }}
                         >
                             <Ionicons style={{ marginRight: 12 }} name="chatbox-outline" size={32} color={colors.likeBar} />
                         </Pressable>

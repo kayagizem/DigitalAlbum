@@ -98,25 +98,6 @@ export async function addUser(data) {
     });
 }
 
-export async function addComment(data) {
-    await addDoc(collection(db, "comments"), {
-        username: data.username,
-        postId: data.postId,
-        dateCreated: Timestamp.now(),
-        dateUpdated: Timestamp.now(),
-        comment: data.comment
-    });
-}
-
-export async function addLikes(data) {
-    await addDoc(collection(db, "likes"), {
-        username: data.username,
-        postId: data.postId,
-        dateCreated: Timestamp.now(),
-        dateUpdated: Timestamp.now()
-    });
-}
-
 export async function setProfilePicture(data) {
     const metadata = {
         contentType: 'image/jpeg'
@@ -491,7 +472,6 @@ export async function deleteNotification(notificationId) {
 // Like Comment 
 export async function isLiked(username, postId) {
     let userLikes = await getAllDataFromWhere("likes", "username", username);
-    console.log(userLikes.map((like) => like.postId));
     return userLikes.map((like) => like.postId).includes(postId);
 }
 
@@ -521,7 +501,7 @@ export async function removeLike(username, postId) {
         if (document.data().postId == postId) {
             await deleteDoc(doc(db, "likes", document.id));
 
-            const docRef = doc(db, "posts", data.postId);
+            const docRef = doc(db, "posts", postId);
             const docSnap = await getDoc(docRef);
 
             await setDoc(docRef, {
@@ -531,4 +511,31 @@ export async function removeLike(username, postId) {
             });
         }
     });
+}
+
+export async function addComment(data) {
+    await addData("comments", {
+        username: data.username,
+        postId: data.postId,
+        comment: data.comment,
+        dateCreated: Timestamp.now()
+    });
+}
+
+export async function getAllLikes(postId) {
+    return getAllDataFromWhere("likes", "postId", postId);
+}
+
+export async function getAllComments(postId) {
+    return getAllDataFromWhere("comments", "postId", postId);
+}
+
+export async function getLikeCount(postId) {
+    let likes = await getAllLikes(postId);
+    return likes.length;
+}
+
+export async function getCommentCount(postId) {
+    let comments = await getAllComments(postId);
+    return comments.length;
 }

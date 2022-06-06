@@ -51,6 +51,7 @@ function NotificationScreen({ navigation }) {
         return (
             <View style={styles.screen}>
                 <HeaderBar title="Notifications"
+                    isId
                 />
             </View>
         );
@@ -58,6 +59,7 @@ function NotificationScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <HeaderBar title="Notifications"
+                isId
             />
             <FlatList
                 data={state.notifications}

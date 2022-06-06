@@ -44,6 +44,7 @@ function HomeScreen({ navigation }) {
         return (
             <View style={styles.screen}>
                 <HeaderBar title="Home"
+                    isId
                 />
             </View >
         );
@@ -51,6 +52,7 @@ function HomeScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <HeaderBar title="Home"
+                isId
             />
             <FlatList
                 data={state.userFollowedAlbums}

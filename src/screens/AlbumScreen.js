@@ -72,15 +72,21 @@ function AlbumScreen({ route, navigation }) {
         fetchAlbum().catch(() => { });
     }, [state.reload, viewApproved]);
 
-    console.log("t")
     const drawButton = () => {
+        if (state.userOwnedAlbums.includes(route.params.albumId)) {
+            return (
+                <GeneralButton
+                    disabled
+                    text="Owning"
+                />
+            );
+        }
         if (albumData.albumType == 0) {
             return (
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
                     < GeneralButton
                         text="Global"
                         disabled
-
                     />
                     {state.userFollowedAlbums.includes(route.params.albumId) ? (
                         <GeneralButton
@@ -115,14 +121,6 @@ function AlbumScreen({ route, navigation }) {
                     )
                     }
                 </View>
-            );
-        }
-        if (state.userOwnedAlbums.includes(route.params.albumId)) {
-            return (
-                <GeneralButton
-                    disabled
-                    text="Owning"
-                />
             );
         }
         return (
