@@ -5,16 +5,16 @@ import HeaderBar from '../components/HeaderBar';
 
 import { useTheme } from '@react-navigation/native';
 import UserView from '../components/UserView';
-import { getAllFollowers } from '../backend/firebase';
+import { getAllContributors } from '../backend/firebase';
 
-function AlbumFollowerScreen({ route, navigation }) {
+function AlbumContributorScreen({ route, navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const [followers, setFollowers] = useState([]);
+    const [members, setMembers] = useState([]);
 
     const onRefresh = React.useCallback(() => {
         setLoading(!loading);
@@ -22,8 +22,8 @@ function AlbumFollowerScreen({ route, navigation }) {
 
     useEffect(async () => {
         setRefreshing(true);
-        let followers = await getAllFollowers(route.params.albumId);
-        setFollowers(followers);
+        let members = await getAllContributors(route.params.albumId);
+        setMembers(members);
         setRefreshing(false);
     }, [loading]);
 
@@ -34,7 +34,7 @@ function AlbumFollowerScreen({ route, navigation }) {
 
     return (
         <View style={styles.screen}>
-            <HeaderBar title="Followers"
+            <HeaderBar title="Members"
                 leftButtonText="Back"
                 onPressLeft={() => navigation.goBack()}
             />
@@ -42,7 +42,7 @@ function AlbumFollowerScreen({ route, navigation }) {
             <View style={styles.content}>
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    data={followers}
+                    data={members}
                     renderItem={renderItem}
                     keyExtractor={item => item.username}
                     refreshControl={
@@ -70,4 +70,4 @@ const createStyle = (colors) => StyleSheet.create({
     },
 });
 
-export default AlbumFollowerScreen;
+export default AlbumContributorScreen;

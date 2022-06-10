@@ -539,3 +539,23 @@ export async function getCommentCount(postId) {
     let comments = await getAllComments(postId);
     return comments.length;
 }
+
+export async function getAllFollowers(albumId) {
+    let followers = await getAllDataFromWhere("followers", "albumId", albumId);
+    let followerData = [];
+    for (let i = 0; i < followers.length; i++) {
+        let data = await getUserDataByUsername(followers[i].username);
+        followerData.push(data);
+    }
+    return followerData;
+}
+
+export async function getAllContributors(albumId) {
+    let followers = await getAllDataFromWhere("contributors", "albumId", albumId);
+    let followerData = [];
+    for (let i = 0; i < followers.length; i++) {
+        let data = await getUserDataByUsername(followers[i].username);
+        followerData.push(data);
+    }
+    return followerData;
+}

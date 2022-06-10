@@ -12,6 +12,7 @@ import { useStateValue } from '../StateProvider';
 import { followAlbum, contributeAlbum, getAlbumData, getPosts, uncontribute, unfollow, addNotification } from '../backend/firebase';
 
 import { Ionicons } from '@expo/vector-icons';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 function AlbumScreen({ route, navigation }) {
     const { colors } = useTheme();
@@ -240,7 +241,7 @@ function AlbumScreen({ route, navigation }) {
                             borderBottomLeftRadius: 45,
                             backgroundColor: state.theme.colors.primary,
                         }]}>
-                            <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Owners</Text>
+                            <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Members</Text>
                         </View>
                         <View style={[styles.albumButton,
                         {
@@ -268,22 +269,22 @@ function AlbumScreen({ route, navigation }) {
                 <View style={[styles.albumBlock, { borderColor: state.theme.colors.primary }]}>
                     <Text style={[styles.albumName, { color: state.theme.colors.text }]}>{albumData.albumName}</Text>
                     <View style={styles.albumButtonContainer}>
-                        <View style={[styles.albumButton,
+                        <Pressable style={[styles.albumButton,
                         {
                             borderTopLeftRadius: 45,
                             borderBottomLeftRadius: 45,
                             backgroundColor: state.theme.colors.primary,
                         }]}>
-                            <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Owners</Text>
-                        </View>
-                        <View style={[styles.albumButton,
+                            <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Members</Text>
+                        </Pressable>
+                        <Pressable style={[styles.albumButton,
                         {
                             borderTopRightRadius: 45,
                             borderBottomRightRadius: 45,
                             backgroundColor: state.theme.colors.primary,
                         }]}>
                             <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText, }]}>Followers</Text>
-                        </View>
+                        </Pressable>
                     </View>
                     {drawButton()}
                 </View>
@@ -315,22 +316,26 @@ function AlbumScreen({ route, navigation }) {
                     <View style={[styles.albumBlock, { borderColor: state.theme.colors.primary }]}>
                         <Text style={[styles.albumName, { color: state.theme.colors.text }]}>{albumData.albumName}</Text>
                         <View style={styles.albumButtonContainer}>
-                            <View style={[styles.albumButton,
+                            <Pressable style={[styles.albumButton,
                             {
                                 borderTopLeftRadius: 45,
                                 borderBottomLeftRadius: 45,
                                 backgroundColor: state.theme.colors.primary,
-                            }]}>
-                                <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Owners</Text>
-                            </View>
-                            <View style={[styles.albumButton,
+                            }]}
+                                onPress={() => navigation.navigate("Album Contributor", { albumId: albumData.albumId })}
+                            >
+                                <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText }]}>Members</Text>
+                            </Pressable>
+                            <Pressable style={[styles.albumButton,
                             {
                                 borderTopRightRadius: 45,
                                 borderBottomRightRadius: 45,
                                 backgroundColor: state.theme.colors.primary,
-                            }]}>
+                            }]}
+                                onPress={() => navigation.navigate("Album Follower", { albumId: albumData.albumId })}
+                            >
                                 <Text style={[styles.albumButtonText, { color: state.theme.colors.buttonText, }]}>Followers</Text>
-                            </View>
+                            </Pressable>
                         </View>
                         {drawButton()}
                     </View>

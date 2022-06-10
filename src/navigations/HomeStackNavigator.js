@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import AlbumScreen from '../screens/AlbumScreen';
 import AlbumFollowerScreen from '../screens/AlbumFollowerScreen';
+import AlbumContributorScreen from '../screens/AlbumContributorScreen';
 import AlbumCreationScreen from '../screens/AlbumCreationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
 import CommentScreen from '../screens/CommentScreen';
@@ -23,6 +24,7 @@ function HomeStackNavigator() {
             <HomeStack.Screen name="Profile" component={ProfileScreen} />
             <HomeStack.Screen name="Album" component={AlbumScreen} />
             <HomeStack.Screen name="Album Follower" component={AlbumFollowerScreen} />
+            <HomeStack.Screen name="Album Contributor" component={AlbumContributorScreen} />
             <HomeStack.Screen name="Post Creation" component={PostCreationScreen} />
             <HomeStack.Screen name="Comment" component={CommentScreen} />
         </HomeStack.Navigator>

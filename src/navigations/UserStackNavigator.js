@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import AlbumScreen from '../screens/AlbumScreen';
 import AlbumFollowerScreen from '../screens/AlbumFollowerScreen';
+import AlbumContributorScreen from '../screens/AlbumContributorScreen';
 import AlbumCreationScreen from '../screens/AlbumCreationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
 import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
@@ -26,6 +27,7 @@ function UserStackNavigator() {
             <UserStack.Screen name="Profile" component={ProfileScreen} />
             <UserStack.Screen name="Album" component={AlbumScreen} />
             <UserStack.Screen name="Album Follower" component={AlbumFollowerScreen} />
+            <UserStack.Screen name="Album Contributor" component={AlbumContributorScreen} />
             <UserStack.Screen name="Post Creation" component={PostCreationScreen} />
             <UserStack.Screen name="Comment" component={CommentScreen} />
         </UserStack.Navigator>

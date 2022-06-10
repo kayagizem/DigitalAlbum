@@ -12,7 +12,11 @@ function ProfileScreen({ route, navigation }) {
     const { colors } = useTheme();
     const styles = createStyle(colors);
 
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState({
+        username: "",
+        name: "",
+        biography: "",
+    });
 
     const [albums, setAlbums] = useState([]);
     const [albumsIndex, setAlbumsIndex] = useState(0);
@@ -21,13 +25,13 @@ function ProfileScreen({ route, navigation }) {
 
     const onRefresh = React.useCallback(() => {
         const refreshUser = async () => {
+            setRefreshing(true);
             let userData = await fetchUserAsync();
             setUserData(userData);
             let albumList = await fetchUserAlbumsAsync(userData.username);
-            albumList = albumList.map((album) => album.albumId);
             let listData = await fetchAlbumsAsync(albumList);
             setAlbums(listData);
-            setAlbums(albumData);
+            setRefreshing(false);
         }
 
         refreshUser().catch(() => { });
@@ -83,20 +87,25 @@ function ProfileScreen({ route, navigation }) {
     if (refreshing) {
         return (
             <View style={styles.screen}>
-                <HeaderBar title=""
+                <HeaderBar title={userData.username}
                     isId
-                    leftButtonText="Create"
-                    onPressLeft={() => navigation.navigate("Album Creation")}
-                    rightButtonText="Settings"
-                    onPressRight={() => {
-                        navigation.navigate("Profile Settings");
-                    }}
+                    leftButtonText="Back"
+                    onPressLeft={() => navigation.goBack()}
                 />
                 <FlatList
                     ListHeaderComponent={
                         < View style={styles.profileBlock} >
                             <View style={styles.profileContainer}>
-                                <View style={styles.profilePicture} />
+                                {userData.profilePictureURI != ""
+                                    ? (
+                                        <Image style={styles.profilePicture}
+                                            source={{ uri: userData.profilePictureURI }}>
+                                        </Image>
+
+                                    ) : (
+                                        <View style={styles.profilePicture} />
+                                    )
+                                }
                                 <View style={styles.profileButtonContainer}>
                                     <Pressable style={[styles.profileButton,
                                     {
@@ -117,10 +126,10 @@ function ProfileScreen({ route, navigation }) {
                                 </View>
                             </View>
                             <Text style={[styles.profileName, { color: colors.text, }]}>
-
+                                {userData.name}
                             </Text>
                             <Text style={[styles.profileBio, { color: colors.text, }]} numberOfLines={4}>
-
+                                {userData.biography}
                             </Text>
                         </View >
                     }
